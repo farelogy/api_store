@@ -16,7 +16,8 @@ class MainController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'name' => 'required',
-            'c_password' => 'required'
+        ],[
+            'email.unique' => 'Username sudah digunakan'
         ]);
         
         if($validated->fails())
