@@ -11,7 +11,7 @@ class MainController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'name' => 'required',
             'c_password' => 'required'
@@ -24,6 +24,7 @@ class MainController extends Controller
             $new_user->email = $request->email;
             $new_user->password = Hash::make($request->password);
             $new_user->save();
+
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Authenticated'
