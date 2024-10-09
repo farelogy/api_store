@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class MainController extends Controller
 {
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        
+        $validated = Validator::make($request->all(), [
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'name' => 'required',
             'c_password' => 'required'
         ]);
+        
         if($validated->fails())
         {
             return response()->json([
