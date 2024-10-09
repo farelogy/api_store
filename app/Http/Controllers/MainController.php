@@ -18,9 +18,10 @@ class MainController extends Controller
         ]);
         if($validated->fails())
         {
-            return response()->json()
-                ->withErrors($validated)
-                ->withInput();
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validated->errors()
+            ], 422);
         }
 
         if($validated)
