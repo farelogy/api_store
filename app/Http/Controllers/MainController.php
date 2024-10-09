@@ -22,8 +22,8 @@ class MainController extends Controller
         if($validated->fails())
         {
             return response()->json([
-                'status' => 'error',
-                'errors' => $validated->errors()
+                'status' => 'Error',
+                'message' => $validated->errors()
             ], 422);
         }
 
