@@ -16,6 +16,12 @@ class MainController extends Controller
             'name' => 'required',
             'c_password' => 'required'
         ]);
+        if($validated->fails())
+        {
+            return response()->json()
+                ->withErrors($validated)
+                ->withInput();
+        }
 
         if($validated)
         {
