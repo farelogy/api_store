@@ -30,7 +30,7 @@ class MainController extends Controller
         }
 
         $encryptedText = $request->password;
-        $decryptedText = Crypt::decrypt($encryptedText);
+        $decryptedText = Crypt::decryptString(base64_decode($encryptedText));
 
         if($validated)
         {
