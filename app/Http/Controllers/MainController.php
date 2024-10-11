@@ -30,12 +30,12 @@ class MainController extends Controller
         }
 
         $encryptedText = $request->password;
-        $decryptedText = Crypt::decryptString(base64_decode($encryptedText));
+        $decryptedText = base64_decode($encryptedText);
         return response()->json([
             'status' => 'Success',
             'message' => $decryptedText
         ],200);
-        
+
         if($validated)
         {
             $new_user = new User();
