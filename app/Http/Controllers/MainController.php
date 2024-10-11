@@ -30,11 +30,9 @@ class MainController extends Controller
         }
 
         $encryptedText = $request->password;
-        $decryptedText = base64_decode($encryptedText);
-        return response()->json([
-            'status' => 'Success',
-            'message' => $decryptedText
-        ],200);
+        $decoded = base64_decode($encryptedText);
+        $utf8Decoded = mb_convert_encoding($decoded, 'UTF-8');
+        $decryptedText = Crypt::decryptString($utf8Decoded);
 
         if($validated)
         {
