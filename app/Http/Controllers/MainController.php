@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
 
 class MainController extends Controller
 {
@@ -28,12 +29,15 @@ class MainController extends Controller
             ], 200);
         }
 
+        $encryptedText = $request->password;
+        $decryptedText = Crypt::decrypt($encryptedText);
+
         if($validated)
         {
             $new_user = new User();
             $new_user->name = $request->name;
             $new_user->email = $request->email;
-            $new_user->password = Hash::make($request->password);
+            $new_user->password = Hash::make($decryptedText);
             $new_user->save();
 
             return response()->json([
