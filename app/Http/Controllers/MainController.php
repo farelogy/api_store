@@ -28,6 +28,10 @@ class MainController extends Controller
                 'message' => $validated->errors()
             ], 200);
         }
+        return response()->json([
+            'status' => 'Error',
+            'message' => $request->password
+        ], 200);
 
         $encryptedText = $request->password;
         $decoded = base64_decode($encryptedText);
