@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class MainController extends Controller
 {
@@ -28,12 +29,12 @@ class MainController extends Controller
                 'message' => $validated->errors()
             ], 200);
         }
-        return response()->json([
-            'status' => 'Error',
-            'message' => $request->password
-        ], 200);
-
-        $encryptedText = $request->password;
+        // return response()->json([
+        //     'status' => 'Error',
+        //     'message' => $request->password
+        // ], 200);
+        $updatedencryptedText= Str::replace("\\", '', $request->password);
+        $encryptedText = $updatedencryptedText;
         $decoded = base64_decode($encryptedText);
         $utf8Decoded = mb_convert_encoding($decoded, 'UTF-8');
         $decryptedText = Crypt::decryptString($utf8Decoded);
