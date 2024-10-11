@@ -38,15 +38,51 @@ class MainController extends Controller
 
             return response()->json([
                 'status' => 'Success',
-                'message' => 'Authenticated'
+                'message' => 'Tunggu Approve oleh Admin'
             ],200);
         }
         else
         {
             return response([
                 'status' => 'Error',
-                'message' => "Sorry, We can't Authenticate You."
+                'message' => "Mohon maaf, bisa mencoba register kembali."
             ], 500);
         }
     }
+
+    public function login(Request $request){
+        $validated = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ],[
+            'email.required' => 'Username diperlukan'
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        if (! Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login success',
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ]);
+
+
+    }
+
 }
