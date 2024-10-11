@@ -33,11 +33,9 @@ class MainController extends Controller
         //     'status' => 'Error',
         //     'message' => $request->password
         // ], 200);
-        $updatedencryptedText= Str::replace("\\", '', $request->password);
-        $encryptedText = $updatedencryptedText;
+        $encryptedText = $request->password;
         $decoded = base64_decode($encryptedText);
-        $utf8Decoded = mb_convert_encoding($decoded, 'UTF-8');
-        $decryptedText = Crypt::decryptString($utf8Decoded);
+        $decryptedText = Crypt::decryptString($decoded);
 
         if($validated)
         {
