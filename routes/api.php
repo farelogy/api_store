@@ -21,3 +21,8 @@ Route::post('/login',[MainController::class,'login']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware(['auth:sanctum', 'check.token.expiration'])->get('/check-token', function (Request $request) {
+    return response()->json(['message' => 'Token is valid'], 200);
+});
+
+
