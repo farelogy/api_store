@@ -7,10 +7,27 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
 
 class MainController extends Controller
 {
+
+    public function check_token(Request $request)
+    {
+        $token = $request->access_token;
+        
+        if ($token) {
+            $tokenData = PersonalAccessToken::findToken($token);
+
+            if (!$tokenData || $tokenData->expires_at->lt(Carbon::now())) {
+                return response()->json(['message' => 'Token is expired'], 401);
+            }
+        } else {
+            return response()->json(['message' => 'Token not provided'], 401);
+        }
+        return response()->json(['message' => 'Token is valid'], 200);
+    }
     public function register(Request $request)
     {
         
