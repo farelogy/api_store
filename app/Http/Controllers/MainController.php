@@ -68,6 +68,7 @@ class MainController extends Controller
 
         if (! Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
+                'status' => 'Error',
                 'message' => 'Unauthorized'
             ], 401);
         }
@@ -77,6 +78,7 @@ class MainController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'status' => 'Success',
             'message' => 'Login success',
             'access_token' => $token,
             'token_type' => 'Bearer'
