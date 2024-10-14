@@ -79,6 +79,8 @@ class MainController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'name' => $user->name,
+            'role' => $user->role,
             'status' => 'Success',
             'message' => 'Login success',
             'access_token' => $token,
