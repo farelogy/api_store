@@ -15,13 +15,13 @@ class MainController extends Controller
 
     public function check_token(Request $request)
     {
-        $token = $request->access_token;
+        $token = $request->input('access_token');
         
         if ($token) {
             $tokenData = PersonalAccessToken::findToken($token);
 
             if (!$tokenData || $tokenData->expires_at->lt(Carbon::now())) {
-                return response()->json(['message' => 'Token is expired','token_data'=>$tokenData], 401);
+                return response()->json(['message' => 'Token is expired','token_data'=>$tokenData,'tokennya'=>$token], 401);
             }
         } else {
             return response()->json(['message' => 'Token not provided'], 401);
