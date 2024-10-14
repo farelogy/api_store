@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class MainController extends Controller
 {
@@ -75,8 +76,12 @@ class MainController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+        $tokenResult = $user->createToken('auth_token');
+        $token = $tokenResult->plainTextToken;
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Set expiration time to 30 days from now
+        $tokenResult->accessToken->expires_at = Carbon::now()->addDays(30);
+        $tokenResult->accessToken->save();
 
         return response()->json([
             'name' => $user->name,
