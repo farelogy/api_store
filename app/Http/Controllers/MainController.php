@@ -70,6 +70,7 @@ class MainController extends Controller
     }
 
     public function login(Request $request){
+        $token = "";
         $validated = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required',
@@ -93,16 +94,20 @@ class MainController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
-        $tokenResult = $user->createToken('auth_token');
-        $token = $tokenResult->plainTextToken;
-
-        // Set expiration time to 30 days from now
-        $tokenResult->accessToken->expires_at = Carbon::now()->addDays(30);
-        $tokenResult->accessToken->save();
+        if($user->role)
+        {
+            $tokenResult = $user->createToken('auth_token');
+            $token = $tokenResult->plainTextToken;
+    
+            // Set expiration time to 30 days from now
+            $tokenResult->accessToken->expires_at = Carbon::now()->addDays(30);
+            $tokenResult->accessToken->save();
+        }
+       
 
         return response()->json([
             'name' => $user->name,
-            'role' => $user->role,
+            'role' => $user->role == null ? "kosong" : $user->role,
             'status' => 'Success',
             'message' => 'Login success',
             'access_token' => $token,
