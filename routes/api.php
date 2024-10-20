@@ -22,5 +22,14 @@ Route::get('/check-token',[MainController::class, 'check_token']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/tambah_cabang', [MainController::class,'tambah_cabang']);
+
+    Route::get('/profile', function () {
+        // Your route logic here
+    });
+
+    // Add more routes here
+});
 
 

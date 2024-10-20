@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Cabang;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -100,7 +101,7 @@ class MainController extends Controller
             $token = $tokenResult->plainTextToken;
     
             // Set expiration time to 30 days from now
-            $tokenResult->accessToken->expires_at = Carbon::now()->addDays(30);
+            // $tokenResult->accessToken->expires_at = Carbon::now()->addDays(30);
             $tokenResult->accessToken->save();
         }
        
@@ -113,8 +114,30 @@ class MainController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer'
         ]);
-
-
     }
 
+    public function tambah_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'nama_cabang' => 'required',
+            'saldo' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        $cabang = new Cabang();
+        $cabang->nama_cabang = $request->nama_cabang;
+        $cabang->saldo = $request->saldo;
+        $cabang->save();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Cabang '.$request->nama_cabang.' Berhasil Ditambahkan',
+        ],200);
+
+    }
 }
