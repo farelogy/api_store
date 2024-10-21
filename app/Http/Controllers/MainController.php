@@ -140,4 +140,13 @@ class MainController extends Controller
         ],200);
 
     }
+
+    public function data_cabang(){
+        $cabang = Cabang::all();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Cabang diterima',
+            'data' => $cabang
+        ],200);
+    }
 }

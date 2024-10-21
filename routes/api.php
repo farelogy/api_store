@@ -24,10 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/tambah_cabang', [MainController::class,'tambah_cabang']);
-
-    Route::get('/profile', function () {
-        // Your route logic here
-    });
+    Route::get('/data_cabang', [MainController::class,'data_cabang']);
 
     // Add more routes here
 });
