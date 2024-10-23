@@ -160,6 +160,10 @@ class MainController extends Controller
                 'message' => $validated->errors()
             ], 200);
         }
+        return response()->json([
+            'status' => 'Error',
+            'message' => $request,
+        ],500);
 
         $cabang = Cabang::find($request->id_cabang);
         $cabang->nama_cabang = $request->nama_cabang;
