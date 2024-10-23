@@ -17,17 +17,13 @@ class MainController extends Controller
     public function check_token(Request $request)
     {
         $token = $request->input('access_token');
-        
-        if ($token) {
-            $tokenData = PersonalAccessToken::findToken($token);
+        $tokenData = PersonalAccessToken::findToken($token);
+        if ($tokenData) {
+            return response()->json(['message' => 'Token is valid'], 200);
 
-            if (!$tokenData || $tokenData->expires_at->lt(Carbon::now())) {
-                return response()->json(['message' => 'Token is expired'], 401);
-            }
         } else {
             return response()->json(['message' => 'Token not provided'], 401);
         }
-        return response()->json(['message' => 'Token is valid'], 200);
     }
     public function register(Request $request)
     {
