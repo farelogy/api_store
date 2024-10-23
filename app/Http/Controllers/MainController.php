@@ -145,4 +145,29 @@ class MainController extends Controller
             'data' => $cabang
         ],200);
     }
+
+    public function edit_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'nama_cabang' => 'required',
+            'saldo' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        $cabang = Cabang::find($request->id_cabang);
+        $cabang->nama_cabang = $request->nama_cabang;
+        $cabang->saldo = $request->saldo;
+        $cabang->save();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Cabang '.$request->nama_cabang.' Berhasil Diedit',
+        ],200);
+    }
 }
