@@ -170,4 +170,25 @@ class MainController extends Controller
             'message' => 'Cabang '.$request->nama_cabang.' Berhasil Diedit',
         ],200);
     }
+
+    public function delete_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        $cabang = Cabang::find($request->id_cabang);
+        $cabang->delete();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Cabang '.$request->nama_cabang.' Berhasil Dihapus',
+        ],200);
+    }
 }
