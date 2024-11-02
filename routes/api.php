@@ -23,10 +23,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::middleware(['auth:sanctum'])->group(function () {
+    //route untuk pengaturan cabang
     Route::post('/tambah_cabang', [MainController::class,'tambah_cabang']);
     Route::get('/data_cabang', [MainController::class,'data_cabang']);
     Route::post('/edit_cabang', [MainController::class,'edit_cabang']);
     Route::post('/delete_cabang', [MainController::class,'delete_cabang']);
+
+    //route untuk pengaturan user
+    Route::get('/data_user', [MainController::class,'data_user']);
+
     // Add more routes here
 });
 

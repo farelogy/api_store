@@ -191,4 +191,13 @@ class MainController extends Controller
             'message' => 'Cabang '.$request->nama_cabang.' Berhasil Dihapus',
         ],200);
     }
+
+    public function data_user(){
+        $user = User::all();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data User diterima',
+            'data' => $user
+        ],200);
+    }
 }
