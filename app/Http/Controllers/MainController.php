@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 use Carbon\Carbon;
-
+use DB;
 class MainController extends Controller
 {
 
@@ -198,6 +198,58 @@ class MainController extends Controller
             'status' => 'Success',
             'message' => 'Data User diterima',
             'data' => $user
+        ],200);
+    }
+
+    public function edit_user(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id' => 'required',
+            'nama' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+        $user = User::find($request->id);
+        $user->role = $request->role;
+        if($request->cabang != null)
+        {
+            DB::table('user_to_cabang')->insert([
+                'id_user'=>$request->id,
+                'id_cabang'=>$request->cabang
+            ]);
+        }
+        $user->save();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Informasi User '.$user->name.' Berhasil Disimpan',
+        ],200);
+    }
+
+    public function delete_user(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+        $user = User::find($request->id);
+        //remove token user
+        $user->tokens()->delete();
+
+        $user->delete();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'User '.$user->name.' Berhasil Dihapus',
         ],200);
     }
 }
