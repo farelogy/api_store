@@ -204,7 +204,7 @@ class MainController extends Controller
     public function edit_user(Request $request){
         $validated = Validator::make($request->all(), [
             'id' => 'required',
-            'nama' => 'required',
+            'role' => 'required',
         ]);
 
         if($validated->fails())
