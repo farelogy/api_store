@@ -193,7 +193,9 @@ class MainController extends Controller
     }
 
     public function data_user(){
-        $user = User::leftJoin('user_to_cabang','users.id','=','user_to_cabang.id_user')->select('users.*','user_to_cabang.id_cabang')->get();
+        $user = User::leftJoin('user_to_cabang','users.id','=','user_to_cabang.id_user')
+        ->leftJoin('cabang','user_to_cabang.id_cabang','=','cabang.id')
+        ->select('users.*','user_to_cabang.id_cabang','cabang.nama_cabang')->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data User diterima',
