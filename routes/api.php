@@ -31,8 +31,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route untuk pengaturan user
     Route::get('/data_user', [MainController::class,'data_user']);
-    Route::get('/edit_user', [MainController::class,'edit_user']);
-    Route::get('/delete_user', [MainController::class,'delete_user']);
+    Route::post('/edit_user', [MainController::class,'edit_user']);
+    Route::post('/delete_user', [MainController::class,'delete_user']);
 
 
     // Add more routes here
