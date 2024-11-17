@@ -220,10 +220,15 @@ class MainController extends Controller
         $user->role = $request->role;
         if($request->cabang != null)
         {
-            DB::table('user_to_cabang')->insert([
-                'id_user'=>$request->id,
-                'id_cabang'=>$request->cabang
-            ]);
+            //cek apabila user sudah termap ke cabang
+            $cek_user = DB::table('user_to_cabang')->where('id_user',$request->id)->where('id_cabang',$request->cabang)->count();
+            if($cek_user == 0)
+            {
+                DB::table('user_to_cabang')->insert([
+                    'id_user'=>$request->id,
+                    'id_cabang'=>$request->cabang
+                ]);
+            }
         }
         $user->save();
         return response()->json([
