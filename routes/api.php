@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/data_user', [MainController::class,'data_user']);
     Route::post('/edit_user', [MainController::class,'edit_user']);
     Route::post('/delete_user', [MainController::class,'delete_user']);
+    Route::post('/reset_password', [MainController::class,'reset_password']);
 
 
     // Add more routes here

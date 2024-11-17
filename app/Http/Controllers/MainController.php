@@ -254,4 +254,27 @@ class MainController extends Controller
             'message' => 'User '.$user->name.' Berhasil Dihapus',
         ],200);
     }
+    public function reset_password(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id' => 'required',
+            'password' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+        $user = User::find($request->id);
+        //reset password user
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'User '.$user->name.' Berhasil Dilakukan Reset Password',
+        ],200);
+    }
 }
