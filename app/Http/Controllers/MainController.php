@@ -230,11 +230,15 @@ class MainController extends Controller
                 ]);
             }
             else{
-                DB::table('user_to_cabang')->where('id_user',$request->id)->delete();
-                DB::table('user_to_cabang')->insert([
-                    'id_user'=>$request->id,
-                    'id_cabang'=>$request->cabang
-                ]);
+                $delete = DB::table('user_to_cabang')->where('id_user',$request->id)->delete();
+                if($delete)
+                {
+                    DB::table('user_to_cabang')->insert([
+                        'id_user'=>$request->id,
+                        'id_cabang'=>$request->cabang
+                    ]);
+                }
+                
             }
         }
         $user->save();
