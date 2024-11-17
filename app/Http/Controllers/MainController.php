@@ -221,7 +221,7 @@ class MainController extends Controller
         if($request->cabang != null)
         {
             //cek apabila user sudah termap ke cabang
-            $cek_user = DB::table('user_to_cabang')->where('id_user',$request->id)->where('id_cabang',$request->cabang)->count();
+            $cek_user = DB::table('user_to_cabang')->where('id_user',$request->id)->count();
             if($cek_user == 0)
             {
                 DB::table('user_to_cabang')->insert([
