@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\BarangController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_user', [MainController::class,'edit_user']);
     Route::post('/delete_user', [MainController::class,'delete_user']);
     Route::post('/reset_password', [MainController::class,'reset_password']);
+
+    //route untuk management barang
+    Route::get('/data_barang', [BarangController::class,'data_barang']);
+    Route::post('/add_barang',[BarangController::class, 'add_barang']);
+    Route::post('/edit_barang',[BarangController::class, 'edit_barang']);
+    Route::post('/delete_barang',[BarangController::class, 'delete_barang']);
+
 
 
     // Add more routes here
