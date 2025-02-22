@@ -21,8 +21,8 @@ class StokController extends Controller
     }
 
     public function data_stok_barang_detail(Request $request){
-        $get_stok = DB::table('stok_barang')->where('id_cabang',$request->id_cabang)->get();
-        $get_cabang_barang = DB::table('barangs')::join($get_stok, 'filtered_stok', function (JoinClause $join){
+        $get_stok = DB::table('stok_barang')->where('id_cabang',$request->id_cabang);
+        $get_cabang_barang = DB::table('barangs')::leftJoinSub($get_stok, 'filtered_stok', function (JoinClause $join){
             $join->on('barangs.id','=','filtered_stok.id_barang');
         })->select('barangs.id','barangs.nama_barang','barangs.satuan','filtered_stok.stok')->get();
         return response()->json([
