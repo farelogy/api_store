@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\StokController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +44,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_barang',[BarangController::class, 'edit_barang']);
     Route::post('/delete_barang',[BarangController::class, 'delete_barang']);
 
+    //route untuk stok barang
+    Route::get('/data_stok_barang',[StokController::class,'data_stok_barang']);
+    Route::post('/add_stok_barang',[StokController::class,'add_stok_barang']);
+    Route::post('/edit_stok_barang',[StokController::class,'edit_stok_barang']);
+    Route::post('/delete_stok_barang',[StokController::class,'delete_stok_barang']);
 
 
     // Add more routes here
