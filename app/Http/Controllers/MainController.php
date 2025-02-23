@@ -339,7 +339,7 @@ class MainController extends Controller
         return response()->json([
             'status' => 'Success',
             'message' => 'Password Anda Berhasil Direset',
-            'data' => $cek_cabang->nama_cabang
+            'data' => [$cek_cabang->nama_cabang,$cek_hub_cabang->id_cabang]
 
         ],200);
     }
