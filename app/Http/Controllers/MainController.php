@@ -319,4 +319,28 @@ class MainController extends Controller
             'message' => 'Password Anda Berhasil Direset',
         ],200);
     }
+
+    public function get_user_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'username' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Terdapat Error'
+            ], 200);
+        }
+        $user_cek = User::where('email',$request->username.'@berkah.com')->first();
+        $cek_hub_cabang = DB::table('user_to_cabang')->where('id_user',$user_cek->id)->first();
+        $cek_cabang = Cabang::where('id_cabang',$cek_hub_cabang->id_cabang)->first();
+        //reset password user
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Password Anda Berhasil Direset',
+            'data' => $user_cek->nama_cabang
+
+        ],200);
+    }
 }
