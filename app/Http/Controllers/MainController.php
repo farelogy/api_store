@@ -304,11 +304,11 @@ class MainController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => $validated->errors()
+                'message' => 'Terdapat Error'
             ], 200);
         }
-        $user = User::where('email',$request->username.'@berkah.com')->first();
-        $user = User::find($user->id);
+        $user_cek = User::where('email',$request->username.'@berkah.com')->first();
+        $user = User::find($user_cek->id);
 
         //reset password user
         $user->password = Hash::make($request->password);
