@@ -334,7 +334,7 @@ class MainController extends Controller
         }
         $user_cek = User::where('email',$request->username.'@berkah.com')->first();
         $cek_hub_cabang = DB::table('user_to_cabang')->where('id_user',$user_cek->id)->first();
-        $cek_cabang = Cabang::where('id_cabang',$cek_hub_cabang->id_cabang)->first();
+        $cek_cabang = Cabang::where('id',$cek_hub_cabang->id_cabang)->first();
         //reset password user
         return response()->json([
             'status' => 'Success',
