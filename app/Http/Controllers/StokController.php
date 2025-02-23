@@ -7,6 +7,7 @@ use DB;
 use App\Models\Cabang;
 use App\Models\Barang;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Facades\Validator;
 
 class StokController extends Controller
 {
@@ -29,6 +30,32 @@ class StokController extends Controller
             'status' => 'Success',
             'message' => 'Data Barang Cabang diterima',
             'data' => $get_cabang_barang
+        ],200);
+    }
+
+    public function add_stok_barang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_barang' => 'required',
+            'id_cabang' => 'required',
+            'stok' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        $stok = DB::table('your_table')->updateOrInsert(
+            ['id_barang' => $request->id_barang, 'id_cabang'=>$request->id_cabang], // Condition to find the record
+            ['stok' => $request->stok] // Values to update or insert
+        );
+        
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Tambah Stok Barang Berhasil',
         ],200);
     }
 }
