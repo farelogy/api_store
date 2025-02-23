@@ -26,7 +26,7 @@ class BarangController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => $validated->errors()
+                'message' => 'Pastikan Field Input Terisi'
             ], 200);
         }
 

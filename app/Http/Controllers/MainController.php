@@ -79,7 +79,7 @@ class MainController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => $validated->errors()
+                'message' => 'Pastikan Field Input Terisi'
             ], 200);
         }
 
@@ -122,7 +122,7 @@ class MainController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => $validated->errors()
+                'message' =>'Pastikan Field Input Terisi'
             ], 200);
         }
 
@@ -157,7 +157,7 @@ class MainController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => $validated->errors()
+                'message' => 'Pastikan Field Input Terisi'
             ], 200);
         }
 
@@ -180,7 +180,7 @@ class MainController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => $validated->errors()
+                'message' => 'Pastikan Field Input Terisi'
             ], 200);
         }
 
