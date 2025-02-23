@@ -37,6 +37,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_user', [MainController::class,'edit_user']);
     Route::post('/delete_user', [MainController::class,'delete_user']);
     Route::post('/reset_password', [MainController::class,'reset_password']);
+    Route::post('/reset_password_profile', [MainController::class,'reset_password']);
+
 
     //route untuk management barang
     Route::get('/data_barang', [BarangController::class,'data_barang']);

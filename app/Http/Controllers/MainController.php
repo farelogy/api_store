@@ -293,4 +293,30 @@ class MainController extends Controller
             'message' => 'User '.$user->name.' Berhasil Dilakukan Reset Password',
         ],200);
     }
+
+    public function reset_password_profile(Request $request){
+        $validated = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+        $user = User::where('email',$request->username.'@berkah.com')->first();
+        $user = User::find($user->id);
+
+        //reset password user
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Password Anda Berhasil Direset',
+        ],200);
+    }
 }
