@@ -39,4 +39,50 @@ class BarangController extends Controller
             'message' => 'Tambah Barang Berhasil',
         ],200);
     }
+
+    public function edit_barang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_barang' => 'required',
+            'nama_barang' => 'required',
+            'harga' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi'
+            ], 200);
+        }
+
+        $cabang = Barang::find($request->id_barang);
+        $cabang->nama_barang = $request->nama_barang;
+        $cabang->harga = $request->harga;
+        $cabang->save();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Barang '.$request->nama_barang.' Berhasil Diedit',
+        ],200);
+    }
+
+    public function delete_barang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_barang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Terdapat Error'
+            ], 200);
+        }
+
+        $cabang = Barang::find($request->id_barang);
+        $cabang->delete();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Cabang '.$request->nama_barang.' Berhasil Dihapus',
+        ],200);
+    }
 }

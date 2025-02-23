@@ -180,7 +180,7 @@ class MainController extends Controller
         {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Pastikan Field Input Terisi'
+                'message' => 'Terdapat Error'
             ], 200);
         }
 
