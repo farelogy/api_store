@@ -48,7 +48,7 @@ class StokController extends Controller
             ], 200);
         }
 
-        $stok = DB::table('your_table')->updateOrInsert(
+        $stok = DB::table('stok_barang')->updateOrInsert(
             ['id_barang' => $request->id_barang, 'id_cabang'=>$request->id_cabang], // Condition to find the record
             ['stok' => $request->stok] // Values to update or insert
         );
