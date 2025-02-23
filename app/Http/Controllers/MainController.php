@@ -310,13 +310,13 @@ class MainController extends Controller
         $user_cek = User::where('email',$request->username.'@berkah.com')->first();
         $user = User::find($user_cek->id);
 
-        //reset password user
-        $user->password = Hash::make($request->password);
-        $user->save();
+        // //reset password user
+        // $user->password = Hash::make($request->password);
+        // $user->save();
 
         return response()->json([
             'status' => 'Success',
-            'message' => 'Password Anda Berhasil Direset',
+            'message' => $user,
         ],200);
     }
 }
