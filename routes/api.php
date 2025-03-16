@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\StokController;
-
+use App\Http\Controllers\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +52,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add_stok_barang',[StokController::class,'add_stok_barang']);
     Route::post('/edit_stok_barang',[StokController::class,'edit_stok_barang']);
     Route::post('/delete_stok_barang',[StokController::class,'delete_stok_barang']);
+
+    //route untuk transaksi
+    Route::post('/add_transaksi',[TransaksiController::class,'add_transaksi']);
+    Route::post('/cek_keranjang',[TransaksiController::class,'cek_keranjang']);
 
 
     // Add more routes here
