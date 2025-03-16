@@ -56,6 +56,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //route untuk transaksi
     Route::post('/add_transaksi',[TransaksiController::class,'add_transaksi']);
     Route::post('/cek_keranjang',[TransaksiController::class,'cek_keranjang']);
+    Route::post('/tambah_keranjang',[TransaksiController::class,'tambah_keranjang']);
+
 
 
     // Add more routes here
