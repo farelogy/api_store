@@ -70,7 +70,11 @@ class TransaksiController extends Controller
         }
 
         //get list keranjang
-        $get_barang = Keranjang::select('keranjangs.id_barang','keranjangs.jumlah','barangs.nama_barang')->leftjoin('barangs','keranjangs.id_barang','=','barangs.id')->where('keranjangs.id_cabang',$request->id_cabang)->get();
+        $get_barang = Keranjang::select('keranjangs.id_barang','keranjangs.jumlah','barangs.nama_barang','stok_barang.stok')
+        ->leftjoin('barangs','keranjangs.id_barang','=','barangs.id')
+        ->leftjoin('stok_barang','keranjangs.id_barang','=','stok_barang.id_barang')
+        ->where('keranjangs.id_cabang',$request->id_cabang)
+        ->where('stok_barang.id_cabang',$request->id_cabang)->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Keranjang diterima',
