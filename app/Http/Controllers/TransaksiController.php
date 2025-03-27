@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Detailtransaksi;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\Keranjang;
+use App\Models\Transaksi;
 use Illuminate\Support\Facades\Validator;
 class TransaksiController extends Controller
 {
@@ -80,5 +82,55 @@ class TransaksiController extends Controller
             'message' => 'Data Keranjang diterima',
             'data' => $get_barang
             ],200);
+    }
+
+    public function check_out(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+        //hapus keranjang
+        Keranjang::where('id_cabang',$request->id_cabang)->delete();
+
+        //buat judul transaksi
+        $judul_transaksi = 'TR-'.strtotime("now");
+        $transaksi = new Transaksi();
+        $transaksi->nama_transaksi = $judul_transaksi;
+        $transaksi->save();
+
+        //buat detail transaksi
+        foreach($request->item as $x)
+        {
+            $detail_trans = new Detailtransaksi();
+            $detail_trans->id_transaksi = $transaksi->id;
+            $detail_trans->id_cabang = $request->id_cabang;
+            $detail_trans->id_barang = $x->id_barang;
+            $detail_trans->nama_barang = $x->nama_barang;
+            $detail_trans->jumlah = $x->jumlah;
+            $detail_trans->status = $x->status;
+            $detail_trans->keterangan = $x->keterangan;
+            $detail_trans->save();
+        }
+
+        //pengurangan stok barang
+        foreach($request->item as $y)
+        {
+            $get_stok = DB::table('stok_barang')->updateOrInsert(
+                ['id_barang' => $y->id_barang, 'id_cabang'=>$request->id_cabang], // Condition to find the record
+                ['stok' => $y->stok - $y->jumlah] // Values to update or insert
+            );
+        }
+       
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Check Out Berhasil',
+        ],200);
+
     }
 }
