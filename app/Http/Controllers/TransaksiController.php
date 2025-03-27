@@ -192,4 +192,32 @@ class TransaksiController extends Controller
             ],200);
     }
 
+
+    public function edit_transaksi_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_transaksi' => 'required',
+            'id_barang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        //get id detail transaksi
+        $get_detail_transaksi = Detailtransaksi::where('id_transaksi',$request->id_transaksi)->where('id_barang',$request->id_barang)->first();
+        $edit_detail = Detailtransaksi::find($get_detail_transaksi->id);
+        $edit_detail->status = $request->status;
+        $edit_detail->keterangan = $request->keterangan;
+        $edit_detail->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Edit Detail Transaksi Berhasil',
+        ],200);
+    }
+
 }
