@@ -142,4 +142,25 @@ class TransaksiController extends Controller
         ],200);
 
     }
+    public function get_transaksi_cabang(Request $request) {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        //get list Transaksi
+        $get_transaksi =Transaksi::where('id_cabang',$request->id_cabang)->get();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Transaksi diterima',
+            'data' => $get_transaksi
+            ],200);
+    }
 }
