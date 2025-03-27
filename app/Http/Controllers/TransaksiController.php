@@ -158,7 +158,7 @@ class TransaksiController extends Controller
         }
 
         //get list Transaksi
-        $get_transaksi =Transaksi::where('id_cabang',$request->id_cabang)->whereDate('created_at', Carbon::today())->get();
+        $get_transaksi =Transaksi::where('id_cabang',$request->id_cabang)->whereDate('created_at', Carbon::today())->orderby('created_at','DESC')->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Transaksi diterima',
