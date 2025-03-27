@@ -106,6 +106,7 @@ class TransaksiController extends Controller
         //buat judul transaksi
         $judul_transaksi = 'TR-'.strtotime("now");
         $transaksi = new Transaksi();
+        $transaksi->id_cabang = $request->id_cabang;
         $transaksi->nama_transaksi = $judul_transaksi;
         $transaksi->save();
 
