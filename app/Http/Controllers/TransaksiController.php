@@ -165,4 +165,31 @@ class TransaksiController extends Controller
             'data' => $get_transaksi
             ],200);
     }
+
+    public function get_transaksi_cabang_detail(Request $request) {
+        $validated = Validator::make($request->all(), [
+            'id_transaksi' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        //get list keranjang
+        $get_barang = Detailtransaksi::select('detailtransaksis.id_barang','detailtransaksis.jumlah','detailtransaksis.nama_barang','detailtransaksis.status','detailtransaksis.keterangan','stok_barang.stok')
+        ->leftjoin('stok_barang',function ($join) {
+            $join->on('detailtransaksis.id_barang', '=', 'stok_barang.id_barang')
+                 ->on('detailtransaksis.id_cabang', '=', 'stok_barang.id_cabang');
+        })->where('detailtransaksis.id_transaksi',$request->id_transaksi)->get();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Detail Transaksi diterima',
+            'data' => $get_barang
+            ],200);
+    }
+
 }
