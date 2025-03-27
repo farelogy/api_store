@@ -71,6 +71,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
+
         //get list keranjang
         $get_barang = Keranjang::select('keranjangs.id_barang','keranjangs.jumlah','barangs.nama_barang','stok_barang.stok')
         ->leftjoin('barangs','keranjangs.id_barang','=','barangs.id')
@@ -95,6 +96,10 @@ class TransaksiController extends Controller
                 'message' => $validated->errors()
             ], 200);
         }
+        
+        //convert item string json
+        $item = json_decode($request->item);
+
         //hapus keranjang
         Keranjang::where('id_cabang',$request->id_cabang)->delete();
 
@@ -105,7 +110,7 @@ class TransaksiController extends Controller
         $transaksi->save();
 
         //buat detail transaksi
-        foreach($request->item as $x)
+        foreach($item as $x)
         {
             $detail_trans = new Detailtransaksi();
             $detail_trans->id_transaksi = $transaksi->id;
@@ -119,7 +124,7 @@ class TransaksiController extends Controller
         }
 
         //pengurangan stok barang
-        foreach($request->item as $y)
+        foreach($item as $y)
         {
             $get_stok = DB::table('stok_barang')->updateOrInsert(
                 ['id_barang' => $y->id_barang, 'id_cabang'=>$request->id_cabang], // Condition to find the record
