@@ -8,6 +8,7 @@ use DB;
 use App\Models\Keranjang;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 class TransaksiController extends Controller
 {
     public function cek_keranjang(Request $request){
@@ -157,7 +158,7 @@ class TransaksiController extends Controller
         }
 
         //get list Transaksi
-        $get_transaksi =Transaksi::where('id_cabang',$request->id_cabang)->get();
+        $get_transaksi =Transaksi::where('id_cabang',$request->id_cabang)->whereDate('created_at', Carbon::today())->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Transaksi diterima',
