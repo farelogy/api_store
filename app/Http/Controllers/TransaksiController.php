@@ -110,7 +110,7 @@ class TransaksiController extends Controller
         $transaksi->save();
 
         //get id transaksi
-        $id_trans = Transaksi::where('nama_transaksi',$judul_transaksi)->first()->nama_transaksi;
+        $id_trans = Transaksi::where('nama_transaksi',$judul_transaksi)->first()->id;
 
 
         //buat detail transaksi
