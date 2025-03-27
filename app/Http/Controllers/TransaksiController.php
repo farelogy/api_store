@@ -103,6 +103,7 @@ class TransaksiController extends Controller
         return response()->json([
             'status' => 'Success',
             'message' => 'Check Out Berhasil',
+            'item' => $item,
         ],200);
         //hapus keranjang
         Keranjang::where('id_cabang',$request->id_cabang)->delete();
