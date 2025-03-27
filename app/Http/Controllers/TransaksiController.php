@@ -104,7 +104,7 @@ class TransaksiController extends Controller
             'status' => 'Success',
             'message' => 'Check Out Berhasil',
             'item' => $item,
-        ],200);
+        ],400);
         //hapus keranjang
         Keranjang::where('id_cabang',$request->id_cabang)->delete();
 
