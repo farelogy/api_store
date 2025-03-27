@@ -109,11 +109,15 @@ class TransaksiController extends Controller
         $transaksi->nama_transaksi = $judul_transaksi;
         $transaksi->save();
 
+        //get id transaksi
+        $id_trans = Transaksi::where('nama_transaksi',$judul_transaksi)->first()->nama_transaksi;
+
+
         //buat detail transaksi
         foreach($item as $x)
         {
             $detail_trans = new Detailtransaksi();
-            $detail_trans->id_transaksi = $transaksi->id;
+            $detail_trans->id_transaksi = $id_trans;
             $detail_trans->id_cabang = $request->id_cabang;
             $detail_trans->id_barang = $x->id_barang;
             $detail_trans->nama_barang = $x->nama_barang;
