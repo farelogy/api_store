@@ -166,6 +166,16 @@ class TransaksiController extends Controller
             ],200);
     }
 
+    public function get_transaksi(Request $request) {
+        //get list Transaksi
+        $get_transaksi =Transaksi::leftjoin('cabang','cabang.id','=','transaksis.id_cabang')->select('transaksis.*','cabang.nama_cabang')->whereDate('created_at', Carbon::parse($request->date))->orderby('created_at','DESC')->get();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Transaksi diterima',
+            'data' => $get_transaksi
+            ],200);
+    }
+
     public function get_transaksi_cabang_detail(Request $request) {
         $validated = Validator::make($request->all(), [
             'id_transaksi' => 'required',
