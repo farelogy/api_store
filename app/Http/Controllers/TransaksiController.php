@@ -168,7 +168,7 @@ class TransaksiController extends Controller
 
     public function get_transaksi(Request $request) {
         //get list Transaksi
-        $get_transaksi =Transaksi::leftjoin('cabang','cabang.id','=','transaksis.id_cabang')->select('transaksis.*','cabang.nama_cabang')->whereDate('created_at', Carbon::parse($request->date))->orderby('created_at','DESC')->get();
+        $get_transaksi =Transaksi::leftjoin('cabang','cabang.id','=','transaksis.id_cabang')->select('transaksis.*','cabang.nama_cabang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at','DESC')->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Transaksi diterima',
