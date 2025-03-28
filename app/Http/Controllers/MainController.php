@@ -203,7 +203,7 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = DATE(NOW())
         //delete transaksi cabang
         Transaksi::where('id_cabang',$request->id_cabang)->delete();
         //remove role cabang user
-        User::where('role', 'cabang')->update(['status' => null]);
+        User::where('role', 'cabang')->update(['role' => null]);
         //remove keranjang
         Keranjang::where('id_cabang',$request->id_cabang)->delete();
         //remove user to cabang
