@@ -5,7 +5,7 @@ use App\Models\Barang;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use DB;
 class BarangController extends Controller
 {
     public function data_barang(){
