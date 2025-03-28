@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Cabang;
+use App\Models\Keranjang;
+use App\Models\Transaksi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -196,7 +198,17 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = DATE(NOW())
                 'message' => 'Terdapat Error'
             ], 200);
         }
-
+        //delete stok cabang
+        DB::table('stok_barang')->where('id_cabang',$request->id_cabang)->delete();
+        //delete transaksi cabang
+        Transaksi::where('id_cabang',$request->id_cabang)->delete();
+        //remove role cabang user
+        User::where('role', 'cabang')->update(['status' => null]);
+        //remove keranjang
+        Keranjang::where('id_cabang',$request->id_cabang)->delete();
+        //remove user to cabang
+        DB::table('user_to_cabang')->where('id_cabang',$request->id_cabang)->delete();
+        //remove cabang
         $cabang = Cabang::find($request->id_cabang);
         $cabang->delete();
         return response()->json([

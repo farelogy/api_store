@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Barang;
+use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -77,12 +78,16 @@ class BarangController extends Controller
                 'message' => 'Terdapat Error'
             ], 200);
         }
-
-        $cabang = Barang::find($request->id_barang);
-        $cabang->delete();
+        //remove stok barang
+        DB::table('stok_barang')->where('id_barang',$request->id_barang)->delete();
+        //remove keranjang
+        Keranjang::where('id_barang',$request->id_barang)->delete();
+        //remove barang
+        $barang = Barang::find($request->id_barang);
+        $barang->delete();
         return response()->json([
             'status' => 'Success',
-            'message' => 'Cabang '.$request->nama_barang.' Berhasil Dihapus',
+            'message' => 'Barang '.$request->nama_barang.' Berhasil Dihapus',
         ],200);
     }
 }
