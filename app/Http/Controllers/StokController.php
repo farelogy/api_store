@@ -8,6 +8,8 @@ use App\Models\Cabang;
 use App\Models\Barang;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\Validator;
+use App\Models\StokBarang;
+use App\Models\Historystok;
 
 class StokController extends Controller
 {
@@ -48,11 +50,44 @@ class StokController extends Controller
             ], 200);
         }
 
-        $stok = DB::table('stok_barang')->updateOrInsert(
-            ['id_barang' => $request->id_barang, 'id_cabang'=>$request->id_cabang], // Condition to find the record
-            ['stok' => $request->stok] // Values to update or insert
-        );
-        
+        $jumlah_stok_update = 0;
+        //get stok eksisting
+        $count_stok_eksisting = StokBarang::where('id_barang',$request->id_barang)->where('id_cabang',$request->id_cabang)->count();
+        if($count_stok_eksisting != 0)
+        {
+            //get id stok eksisting
+            $stok_eksisting = StokBarang::where('id_barang',$request->id_barang)->where('id_cabang',$request->id_cabang)->first();
+            $update_stok = StokBarang::find($stok_eksisting->id);
+            $update_stok->stok = $request->stok;
+            $update_stok->save();
+
+            $jumlah_stok_update = $request->stok - $stok_eksisting->stok;
+        }
+        else
+        {
+            $new_stok  = new StokBarang();
+            $new_stok->id_barang = $request->id_barang;
+            $new_stok->id_cabang = $request->id_cabang;
+            $new_stok->stok = $request->stok;
+            $new_stok->save();
+
+            $jumlah_stok_update = $request->stok;
+        }
+        //tambah history stok
+        $history_stok = new Historystok();
+        $history_stok->id_barang = $request->id_barang;
+        $history_stok->id_cabang = $request->id_cabang;
+        $history_stok->jumlah = $request->jumlah;
+        if($jumlah_stok_update < 0)
+        {
+            $history_stok->status = 'Kurang';
+        }
+        else
+        {
+            $history_stok->status = 'Tambah';
+        }
+        $history_stok->save();
+
         return response()->json([
             'status' => 'Success',
             'message' => 'Tambah Stok Barang Berhasil',
