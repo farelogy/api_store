@@ -141,7 +141,7 @@ class TransaksiController extends Controller
             //put history stok
             $history_stok = new Historystok();
             $history_stok->id_barang = $y->id_barang;
-            $history_stok->id_cabang = $y->id_cabang;
+            $history_stok->id_cabang = $request->id_cabang;
             $history_stok->stok = $y->jumlah;
             $history_stok->status = 'Check Out';
             $history_stok->save();
