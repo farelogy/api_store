@@ -77,7 +77,7 @@ class StokController extends Controller
         $history_stok = new Historystok();
         $history_stok->id_barang = $request->id_barang;
         $history_stok->id_cabang = $request->id_cabang;
-        $history_stok->jumlah = $request->jumlah;
+        $history_stok->jumlah = $jumlah_stok_update;
         if($jumlah_stok_update < 0)
         {
             $history_stok->status = 'Kurang';
