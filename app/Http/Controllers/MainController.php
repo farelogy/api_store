@@ -367,7 +367,7 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = DATE(NOW())
         //reset password user
         return response()->json([
             'status' => 'Success',
-            'message' => 'Password Anda Berhasil Direset',
+            'message' => 'Data User Cabang Diterima',
             'data' => [$cek_cabang->nama_cabang,$cek_hub_cabang->id_cabang]
 
         ],200);

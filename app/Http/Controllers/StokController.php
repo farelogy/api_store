@@ -93,4 +93,27 @@ class StokController extends Controller
             'message' => 'Tambah Stok Barang Berhasil',
         ],200);
     }
+
+    public function history_stok_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+
+        $get_history = Historystok::leftjoin('barangs','historystoks.id_barang','=','barangs.id')->where('historystoks.id_cabang',$request->id_cabang)
+                        ->select('historystoks.id','barangs.nama_barang','historystoks.status','historystoks.jumlah','historystoks.updated_at')->get();
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data History Stok Cabang diterima',
+            'data' => $get_history
+        ],200);
+        
+    }
 }
