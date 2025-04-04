@@ -9,6 +9,7 @@ use App\Models\Keranjang;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Models\Historystok;
 class TransaksiController extends Controller
 {
     public function cek_keranjang(Request $request){
@@ -136,6 +137,15 @@ class TransaksiController extends Controller
                 ['id_barang' => $y->id_barang, 'id_cabang'=>$request->id_cabang], // Condition to find the record
                 ['stok' => $y->stok - $y->jumlah] // Values to update or insert
             );
+
+            //put history stok
+            $history_stok = new Historystok();
+            $history_stok->id_barang = $y->id_barang;
+            $history_stok->id_cabang = $y->id_cabang;
+            $history_stok->stok = $y->jumlah;
+            $history_stok->status = 'Check Out';
+            $history_stok->save();
+
         }
        
         return response()->json([
