@@ -108,7 +108,7 @@ class StokController extends Controller
         }
 
         $get_history = Historystok::leftjoin('barangs','historystoks.id_barang','=','barangs.id')->where('historystoks.id_cabang',$request->id_cabang)
-                        ->select('historystoks.id','barangs.nama_barang','historystoks.status','historystoks.jumlah','historystoks.updated_at')->orderby('historystoks.updated_at','desc')->get();
+                        ->select('historystoks.id','barangs.nama_barang','historystoks.status','historystoks.jumlah','historystoks.updated_at')->orderby('historystoks.updated_at','desc')->limit(50)->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data History Stok Cabang diterima',
