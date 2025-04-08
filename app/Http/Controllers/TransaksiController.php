@@ -60,6 +60,30 @@ class TransaksiController extends Controller
 
     }
 
+    public function delete_keranjang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_barang' => 'required',
+            'id_cabang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors()
+            ], 200);
+        }
+        //delete barang di keranjang
+        Keranjang::where('id_cabang',$request->id_cabang)->where('id_barang',$request->id_barang)->delete();
+        
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Delete Barang Berhasil',
+        ],200);
+
+
+    }
+
     public function get_barang_keranjang(Request $request) {
         $validated = Validator::make($request->all(), [
             'id_cabang' => 'required',
