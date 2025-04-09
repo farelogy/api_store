@@ -279,7 +279,7 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = DATE(NOW())
 
     public function delete_user(Request $request){
         $validated = Validator::make($request->all(), [
-            'id' => 'required',
+            'id_user' => 'required',
         ]);
 
         if($validated->fails())
@@ -289,9 +289,16 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = DATE(NOW())
                 'message' => $validated->errors()
             ], 200);
         }
-        $user = User::find($request->id);
+        $user = User::find($request->id_user);
         //remove token user
         $user->tokens()->delete();
+
+        //remove user to cabang if ada
+        $cek_user_cabang = DB::table('user_to_cabang')->where('id_user',$request->id_user)->count();
+        if($cek_user_cabang != 0)
+        {
+            DB::table('user_to_cabang')->where('id_user',$request->id_user)->delete();
+        }
 
         $user->delete();
         return response()->json([
