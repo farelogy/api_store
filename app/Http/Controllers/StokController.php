@@ -25,7 +25,7 @@ class StokController extends Controller
 
     public function data_stok_barang2(){
         $get_cabang =   Cabang::leftjoin('stok_barang','cabang.id','=','stok_barang.id_cabang')->leftjoin('barangs','barangs.id','=','stok_barang.id_barang')
-                        ->select('cabang.id','cabang.nama_cabang',DB::raw('SUM(stok_barang.stok) as stok',DB::raw('SUM(stok_barang.stok*barangs.harga) as rupiah_asset')))
+                        ->select('cabang.id','cabang.nama_cabang',DB::raw('SUM(stok_barang.stok) as stok'),DB::raw('SUM(stok_barang.stok*barangs.harga) as rupiah_asset'))
                         ->groupby('cabang.id','cabang.nama_cabang')->get();
         return response()->json([
             'status' => 'Success',
