@@ -49,6 +49,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route untuk stok barang
     Route::get('/data_stok_barang',[StokController::class,'data_stok_barang']);
+    Route::get('/data_stok_barang2',[StokController::class,'data_stok_barang2']);
+
     Route::post('/data_stok_barang_detail',[StokController::class,'data_stok_barang_detail']);
     Route::post('/add_stok_barang',[StokController::class,'add_stok_barang']);
     Route::post('/edit_stok_barang',[StokController::class,'edit_stok_barang']);
