@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/tambah_cabang', [MainController::class,'tambah_cabang']);
     Route::get('/data_cabang', [MainController::class,'data_cabang']);
     Route::get('/data_cabang_home', [MainController::class,'data_cabang_home']);
+    Route::post('/data_cabang_home2', [MainController::class,'data_cabang_home2']);
     Route::post('/edit_cabang', [MainController::class,'edit_cabang']);
     Route::post('/delete_cabang', [MainController::class,'delete_cabang']);
 

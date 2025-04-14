@@ -160,6 +160,29 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = DATE(NOW())
             'data' => $cabang
         ],200);
     }
+    public function data_cabang_home2(Request $request){
+        $validated = Validator::make($request->all(), [
+            'date' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Something Went Wrong'
+            ], 200);
+        }
+        $cabang = DB::select("
+        SELECT a.*,b.tanggal,b.jumlah_transaksi,b.total_harga FROM cabang a LEFT JOIN (SELECT d.id_cabang,DATE_FORMAT(d.created_at,'%Y-%m-%d') as tanggal,COUNT(DISTINCT(d.nama_transaksi)) as jumlah_transaksi, SUM(d.total_harga) as total_harga FROM (SELECT a.*,b.id_barang,b.jumlah,c.harga,b.jumlah*c.harga as total_harga FROM transaksis a
+LEFT JOIN detailtransaksis b ON a.id = b.id_transaksi
+LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = ".Carbon::parse($request->date)." ) d GROUP BY d.id_cabang,DATE_FORMAT(d.created_at,'%Y-%m-%d')) b ON a.id = b.id_cabang;
+        ");
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Cabang diterima',
+            'data' => $cabang
+        ],200);
+    }
 
     public function edit_cabang(Request $request){
         $validated = Validator::make($request->all(), [
