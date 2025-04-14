@@ -10,6 +10,7 @@ use App\Models\Transaksi;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Historystok;
+use Illuminate\Database\Query\JoinClause;
 class TransaksiController extends Controller
 {
     public function cek_keranjang(Request $request){
@@ -201,8 +202,12 @@ class TransaksiController extends Controller
     }
 
     public function get_transaksi(Request $request) {
+        //get list harga total per transaksi
+        $harga_total_transaksi = Detailtransaksi::leftjoin('barangs','barangs.id','=','detailtransaksis.id_barang')->select('detailtransaksis.id_transaksi',DB::raw('SUM(detailtransaksis.jumlah*barangs.harga) as total_rupiah_transaksi'))->groupby('detailtransaksis.id_transaksi')->get();
         //get list Transaksi
-        $get_transaksi =Transaksi::leftjoin('cabang','cabang.id','=','transaksis.id_cabang')->select('transaksis.*','cabang.nama_cabang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at','DESC')->get();
+        $get_transaksi =Transaksi::leftjoin('cabang','cabang.id','=','transaksis.id_cabang')->leftJoinSub($harga_total_transaksi, 'harga_total_transaksi', function (JoinClause $join){
+            $join->on('transaksis.id','=','harga_total_transaksi.id_transaksi');
+        })->select('transaksis.*','harga_total_transaksi.total_rupiah_transaksi','cabang.nama_cabang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at','DESC')->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Transaksi diterima',
