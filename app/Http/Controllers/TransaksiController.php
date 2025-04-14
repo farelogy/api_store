@@ -203,7 +203,7 @@ class TransaksiController extends Controller
 
     public function get_transaksi(Request $request) {
         //get list harga total per transaksi
-        $harga_total_transaksi = Detailtransaksi::leftjoin('barangs','barangs.id','=','detailtransaksis.id_barang')->select('detailtransaksis.id_transaksi',DB::raw('SUM(detailtransaksis.jumlah*barangs.harga) as total_rupiah_transaksi'))->groupby('detailtransaksis.id_transaksi')->get();
+        $harga_total_transaksi = Detailtransaksi::leftjoin('barangs','barangs.id','=','detailtransaksis.id_barang')->select('detailtransaksis.id_transaksi',DB::raw('SUM(detailtransaksis.jumlah*barangs.harga) as total_rupiah_transaksi'))->groupby('detailtransaksis.id_transaksi');
         //get list Transaksi
         $get_transaksi =Transaksi::leftjoin('cabang','cabang.id','=','transaksis.id_cabang')->leftJoinSub($harga_total_transaksi, 'harga_total_transaksi', function (JoinClause $join){
             $join->on('transaksis.id','=','harga_total_transaksi.id_transaksi');
