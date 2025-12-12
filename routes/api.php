@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/get_transaksi_cabang_detail',[TransaksiController::class,'get_transaksi_cabang_detail']);
     Route::post('/edit_transaksi_cabang',[TransaksiController::class,'edit_transaksi_cabang']);
 
-    // Add more routes here
+    // Add more routes here tes
 });
 
 
