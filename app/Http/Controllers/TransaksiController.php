@@ -99,7 +99,6 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-
         //get list keranjang
         $get_barang = Keranjang::select('keranjangs.id_barang','keranjangs.jumlah','keranjangs.harga_satuan','barangs.nama_barang','stok_barang.stok')
         ->leftjoin('barangs','keranjangs.id_barang','=','barangs.id')
