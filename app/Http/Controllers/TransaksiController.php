@@ -50,6 +50,7 @@ class TransaksiController extends Controller
             $keranjang->id_cabang = $request->id_cabang;
             $keranjang->id_barang = $request->id_barang;
             $keranjang->jumlah = $request->jumlah;
+            $keranjang->harga_satuan = $request->harga_satuan;
             $keranjang->save();
         }
         
