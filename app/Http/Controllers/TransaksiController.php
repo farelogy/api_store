@@ -6,6 +6,7 @@ use App\Models\Detailtransaksi;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\Keranjang;
+use App\Models\Pembeli;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -112,6 +113,14 @@ class TransaksiController extends Controller
             ],200);
     }
 
+    public function ceknamapembeli(Request $request){
+        $ceknama = Pembeli::where("nama_pembeli",$request->nama_pembeli)->count();
+        return response()->json([
+            'status' => 'Success',
+            'data' => $ceknama
+        ]);
+    }
+
     public function check_out(Request $request){
         $validated = Validator::make($request->all(), [
             'id_cabang' => 'required',
@@ -124,6 +133,23 @@ class TransaksiController extends Controller
             ], 200);
         }
         
+        //tambahkan pembelinya dulu
+        $ceknama = Pembeli::where("nama_pembeli",$request->nama_pembeli)->count();
+        if($ceknama != 0)
+        {
+            $id_pembeli = Pembeli::where("nama_pembeli",$request->nama_pembeli)->first();
+            $id_pembeli = $id_pembeli->id;
+        }
+        else {
+            $new_pembeli = new Pembeli();
+            $new_pembeli->nama_pembeli = $request->nama_pembeli;
+            $new_pembeli->saldo = $request->saldo;
+            $new_pembeli->save();
+            $id_pembeli = $new_pembeli->id;
+        }
+        // cek saldo, ini akan pengaruh ke kas harian
+
+
         //convert item string json
         $item = json_decode($request->item);
 
@@ -134,7 +160,10 @@ class TransaksiController extends Controller
         $judul_transaksi = 'TR-'.strtotime("now");
         $transaksi = new Transaksi();
         $transaksi->id_cabang = $request->id_cabang;
+        $transaksi->id_pembeli = $id_pembeli;
         $transaksi->nama_transaksi = $judul_transaksi;
+        $transaksi->keterangan = $request->keterangan;
+        $transaksi->status = $request->status;
         $transaksi->save();
 
         //get id transaksi
@@ -150,8 +179,6 @@ class TransaksiController extends Controller
             $detail_trans->id_barang = $x->id_barang;
             $detail_trans->nama_barang = $x->nama_barang;
             $detail_trans->jumlah = $x->jumlah;
-            $detail_trans->status = $x->status;
-            $detail_trans->keterangan = $x->keterangan;
             $detail_trans->save();
         }
 
