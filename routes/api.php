@@ -72,7 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route untuk data pembeli
     Route::post('/get_pembeli',[PembeliController::class,'get_pembeli']);
-
+    Route::post('/ceknamapembeli',[PembeliController::class,'ceknamapembeli']);
     // Add more routes here tes
 });
 

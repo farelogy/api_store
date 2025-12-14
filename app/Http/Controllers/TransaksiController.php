@@ -113,13 +113,7 @@ class TransaksiController extends Controller
             ],200);
     }
 
-    public function ceknamapembeli(Request $request){
-        $ceknama = Pembeli::where("nama_pembeli",$request->nama_pembeli)->count();
-        return response()->json([
-            'status' => 'Success',
-            'data' => $ceknama
-        ]);
-    }
+
 
     public function check_out(Request $request){
         $validated = Validator::make($request->all(), [

@@ -23,4 +23,12 @@ class PembeliController extends Controller
             'data' => $get_pembeli
             ],200);
     }
+
+        public function ceknamapembeli(Request $request){
+        $ceknama = Pembeli::where("nama_pembeli",$request->nama_pembeli)->count();
+        return response()->json([
+            'status' => 'Success',
+            'data' => $ceknama
+        ]);
+    }
 }
