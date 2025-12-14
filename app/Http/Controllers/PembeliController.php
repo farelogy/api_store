@@ -28,7 +28,7 @@ class PembeliController extends Controller
         $ceknama = Pembeli::where("nama_pembeli",$request->nama_pembeli)->count();
         return response()->json([
             'status' => 'Success',
-            'data' => $ceknama
+            'data' => [$ceknama]
         ]);
     }
 }
