@@ -173,6 +173,7 @@ class TransaksiController extends Controller
             $detail_trans->id_barang = $x->id_barang;
             $detail_trans->nama_barang = $x->nama_barang;
             $detail_trans->jumlah = $x->jumlah;
+            $detail_trans->harga_satuan = $x->harga_satuan;
             $detail_trans->save();
         }
 
