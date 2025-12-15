@@ -9,7 +9,7 @@ use App\Http\Controllers\StokController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\KaryawanController;
-
+use App\Http\Controllers\KasharianController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +81,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/get_karyawan',[KaryawanController::class,'get_karyawan']);
     Route::post('/edit_karyawan',[KaryawanController::class,'edit_karyawan']);
     Route::post('/delete_karyawan',[KaryawanController::class,'delete_karyawan']);
+
+    //route Kas Harian atau operaional (ini relate dengan piutang dan transaksi)
+    Route::post('/tambah_operasional_cabang',[KasharianController::class,'tambah_operasional_cabang']);
+    Route::get('/get_operasional_cabang',[KasharianController::class,'get_operasional_cabang']);
+    Route::post('/edit_operasional_cabang',[KasharianController::class,'edit_operasional_cabang']);
+    Route::post('/delete_operasional_cabang',[KasharianController::class,'delete_operasional_cabang']);
+    
+
     // Add more routes here tes
 });
 
