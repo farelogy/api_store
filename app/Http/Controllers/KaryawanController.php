@@ -26,6 +26,7 @@ class KaryawanController extends Controller
 
         $karyawan = new Karyawan();
         $karyawan->nama_karyawan = $request->nama_karyawan;
+        $karyawan->status = $request->status;
         $karyawan->save();
         return response()->json([
             'status' => 'Success',
