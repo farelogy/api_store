@@ -41,8 +41,19 @@ class KasharianController extends Controller
 
     }
 
-    public function get_operasional_cabang(){
-        $kasharian = Kasharian::orderBy('created_at','desc')->get();
+    public function get_operasional_cabang(Request $request){
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if($validated->fails())
+        {
+            return response()->json([
+                'status' => 'Error',
+                'message' =>'Hubungi Admin Anda'
+            ], 200);
+        }
+        $kasharian = Kasharian::where('id_cabang',$request->id_cabang)->orderBy('created_at','desc')->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Operasional diterima',

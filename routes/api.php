@@ -84,7 +84,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route Kas Harian atau operaional (ini relate dengan piutang dan transaksi)
     Route::post('/tambah_operasional_cabang',[KasharianController::class,'tambah_operasional_cabang']);
-    Route::get('/get_operasional_cabang',[KasharianController::class,'get_operasional_cabang']);
+    Route::post('/get_operasional_cabang',[KasharianController::class,'get_operasional_cabang']);
     Route::post('/edit_operasional_cabang',[KasharianController::class,'edit_operasional_cabang']);
     Route::post('/delete_operasional_cabang',[KasharianController::class,'delete_operasional_cabang']);
     
