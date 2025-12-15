@@ -36,7 +36,7 @@ class KaryawanController extends Controller
     }
 
     public function get_karyawan(){
-        $karyawan = Karyawan::all();
+        $karyawan = Karyawan::orderBy('status','asc'->orderBy('updated_at','desc'))->get();
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Karyawan diterima',
