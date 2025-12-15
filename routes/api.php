@@ -8,6 +8,8 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\KaryawanController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +75,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //route untuk data pembeli
     Route::post('/get_pembeli',[PembeliController::class,'get_pembeli']);
     Route::post('/ceknamapembeli',[PembeliController::class,'ceknamapembeli']);
+    
+    //route untuk karyawan
+    Route::post('/tambah_karyawan',[KaryawanController::class,'tambah_karyawan']);
+    Route::get('/get_karyawan',[KaryawanController::class,'get_karyawan']);
+    Route::post('/edit_karyawan',[KaryawanController::class,'edit_karyawan']);
+    Route::post('/delete_karyawan',[KaryawanController::class,'delete_karyawan']);
     // Add more routes here tes
 });
 
