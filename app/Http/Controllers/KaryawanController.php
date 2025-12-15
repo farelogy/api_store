@@ -26,7 +26,7 @@ class KaryawanController extends Controller
 
         $karyawan = new Karyawan();
         $karyawan->nama_karyawan = $request->nama_karyawan;
-        $cabang->save();
+        $karyawan->save();
         return response()->json([
             'status' => 'Success',
             'message' => 'Karyawan '.$request->nama_karyawan.' Berhasil Ditambahkan',
