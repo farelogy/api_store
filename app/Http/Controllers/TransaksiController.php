@@ -11,6 +11,7 @@ use App\Models\Transaksi;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Historystok;
+use App\Models\Kasharian;
 use Illuminate\Database\Query\JoinClause;
 class TransaksiController extends Controller
 {
@@ -137,7 +138,6 @@ class TransaksiController extends Controller
         else {
             $new_pembeli = new Pembeli();
             $new_pembeli->nama_pembeli = $request->nama_pembeli;
-            $new_pembeli->saldo = $request->saldo;
             $new_pembeli->save();
             $id_pembeli = $new_pembeli->id;
         }
@@ -194,7 +194,19 @@ class TransaksiController extends Controller
             $history_stok->save();
 
         }
+       //record to kas harian
+       if($request->saldo != 0){
+        $kasharian = new Kasharian();
+       $kasharian->kategori = "Pembelian Barang";
+       $kasharian->keterangan = "Transaksi ".$id_trans;
+       $kasharian->id_pembeli = $request->id_pembeli;
+       $kasharian->jumlah = $request->saldo;
+       $kasharian->id_cabang = $request->id_cabang;
+       $kasharian->status = "Masuk";
+       $kasharian->save();
+       }
        
+
         return response()->json([
             'status' => 'Success',
             'message' => 'Check Out Berhasil',
