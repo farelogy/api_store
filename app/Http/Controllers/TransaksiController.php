@@ -229,7 +229,7 @@ class TransaksiController extends Controller
 
         //get list Transaksi
         $get_transaksi =Transaksi::leftjoin('pembelis','transaksis.id_pembeli','=','pembelis.id')->select('transaksis.*','pembelis.nama_pembeli')->
-        where('id_cabang',$request->id_cabang)->whereDate('created_at', Carbon::parse($request->date))->orderby('created_at','DESC')
+        where('transaksis.id_cabang',$request->id_cabang)->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at','DESC')
         ->get();
         return response()->json([
             'status' => 'Success',
