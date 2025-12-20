@@ -194,7 +194,7 @@ class TransaksiController extends Controller
             $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
             $pembayaran->id_pembeli = $id_pembeli;
             $pembayaran->status = $request->status;
-            $pembayaran->jumlah_besar = $request->saldo;
+            $pembayaran->jumlah_bayar = $request->saldo;
             $pembayaran->save();
 
             $detail_pembayaran = new DetailPembayaran;
