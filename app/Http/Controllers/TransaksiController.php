@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DetailPembayaran;
+use App\Models\Detailpembayaran;
 use App\Models\Detailtransaksi;
 use App\Models\Historystok;
 use App\Models\Kasharian;
