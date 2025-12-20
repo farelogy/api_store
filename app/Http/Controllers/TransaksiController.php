@@ -266,7 +266,7 @@ class TransaksiController extends Controller
         }
 
         //get list keranjang
-        $get_barang = Detailtransaksi::select('detailtransaksis.id_barang','detailtransaksis.jumlah','detailtransaksis.nama_barang','detailtransaksis.status','detailtransaksis.keterangan','stok_barang.stok')
+        $get_barang = Detailtransaksi::select('detailtransaksis.id_barang','detailtransaksis.jumlah','detailtransaksis.nama_barang','detailtransaksis.status','detailtransaksis.keterangan','detailtransaksis.harga_satuan','stok_barang.stok')
         ->leftjoin('stok_barang',function ($join) {
             $join->on('detailtransaksis.id_barang', '=', 'stok_barang.id_barang')
                  ->on('detailtransaksis.id_cabang', '=', 'stok_barang.id_cabang');
