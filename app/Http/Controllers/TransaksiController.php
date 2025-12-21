@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
 use App\Models\Detailpembayaran;
 use App\Models\Detailtransaksi;
 use App\Models\Historystok;
@@ -199,12 +200,12 @@ class TransaksiController extends Controller
 
         }
         //record to kas harian dan pembayarans
-        if ($request->jumlah_bayar != 0) {
+        if ($jumlahbayar != 0) {
             $pembayaran = new Pembayaran;
             $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
             $pembayaran->id_pembeli = $id_pembeli;
             $pembayaran->status = $request->status;
-            $pembayaran->jumlah_bayar = $request->jumlah_bayar;
+            $pembayaran->jumlah_bayar = $jumlahbayar;
             $pembayaran->save();
 
             $detail_pembayaran = new DetailPembayaran;
@@ -221,6 +222,12 @@ class TransaksiController extends Controller
             $kasharian->id_transaksi = $id_trans;
             $kasharian->status = 'Masuk';
             $kasharian->save();
+
+            //karena ada pembayaran maka perlu masuk juga ke saldo cabang
+            $update_cabang = Cabang::find($id_cabang);
+            $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
+            $update_cabang->save();
+
         }
 
         return response()->json([
