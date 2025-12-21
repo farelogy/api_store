@@ -140,9 +140,13 @@ class TransaksiController extends Controller
             $id_pembeli = $new_pembeli->id;
         }
         // update saldo pembeli jika pembayaran transaksi berlebih
-        if (($request->saldo + $request->jumlah_bayar) - $request->total_harga >= 0) {
+        $saldopembeli = floatval($request->saldo);
+        $jumlahbayar = floatval($request->jumlah_bayar);
+        $total_harga = floatval($request->total_harga);
+
+        if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
             $update_pembeli = Pembeli::find($id_pembeli);
-            $update_pembeli->saldo = ($request->saldo + $request->jumlah_bayar) - $request->total_harga;
+            $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
             $update_pembeli->save();
         }
 
