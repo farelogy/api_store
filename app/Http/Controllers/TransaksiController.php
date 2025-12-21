@@ -137,6 +137,7 @@ class TransaksiController extends Controller
         } else {
             $new_pembeli = new Pembeli;
             $new_pembeli->nama_pembeli = $request->nama_pembeli;
+            $new_pembeli->saldo = 0;
             $new_pembeli->save();
             $id_pembeli = $new_pembeli->id;
         }
