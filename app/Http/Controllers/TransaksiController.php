@@ -217,7 +217,7 @@ class TransaksiController extends Controller
             $kasharian = new Kasharian;
             $kasharian->kategori = 'Pembelian Barang';
             $kasharian->keterangan = 'Transaksi '.$judul_transaksi;
-            $kasharian->id_pembeli = $request->id_pembeli;
+            $kasharian->id_pembeli = $id_pembeli;
             $kasharian->jumlah = $request->jumlah_bayar;
             $kasharian->id_cabang = $request->id_cabang;
             $kasharian->id_transaksi = $id_trans;
