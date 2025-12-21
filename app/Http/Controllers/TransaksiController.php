@@ -139,7 +139,12 @@ class TransaksiController extends Controller
             $new_pembeli->save();
             $id_pembeli = $new_pembeli->id;
         }
-        // cek saldo, ini akan pengaruh ke kas harian
+        // update saldo pembeli jika pembayaran transaksi berlebih
+        if (($request->saldo + $request->jumlah_bayar) - $request->total_harga >= 0) {
+            $update_pembeli = Pembeli::find($id_pembeli);
+            $update_pembeli->saldo = ($request->saldo + $request->jumlah_bayar) - $request->total_harga;
+            $update_pembeli->save();
+        }
 
         //convert item string json
         $item = json_decode($request->item);
