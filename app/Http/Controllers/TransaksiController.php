@@ -225,7 +225,7 @@ class TransaksiController extends Controller
             $kasharian->save();
 
             //karena ada pembayaran maka perlu masuk juga ke saldo cabang
-            $update_cabang = Cabang::find($id_cabang);
+            $update_cabang = Cabang::find($request->id_cabang);
             $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
             $update_cabang->save();
 
