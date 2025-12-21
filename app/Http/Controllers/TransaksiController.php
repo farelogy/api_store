@@ -164,6 +164,7 @@ class TransaksiController extends Controller
         $transaksi->nama_transaksi = $judul_transaksi;
         $transaksi->keterangan = $request->keterangan;
         $transaksi->status = $request->status;
+        $transaksi->jumlah_bayar = $jumlahbayar;
         $transaksi->save();
 
         //get id transaksi
@@ -198,12 +199,12 @@ class TransaksiController extends Controller
 
         }
         //record to kas harian dan pembayarans
-        if ($request->saldo != 0) {
+        if ($request->jumlah_bayar != 0) {
             $pembayaran = new Pembayaran;
             $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
             $pembayaran->id_pembeli = $id_pembeli;
             $pembayaran->status = $request->status;
-            $pembayaran->jumlah_bayar = $request->saldo;
+            $pembayaran->jumlah_bayar = $request->jumlah_bayar;
             $pembayaran->save();
 
             $detail_pembayaran = new DetailPembayaran;
