@@ -95,4 +95,59 @@ class KasharianController extends Controller
             'message' => 'Operasional Berhasil Diedit',
         ], 200);
     }
+
+    public function get_data_uang_makan(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Hubungi Admin Anda',
+            ], 200);
+        }
+        $kasharian = Kasharian::leftjoin('karyawans', 'kasharians.id_karyawan', '=', 'karyawans.id')
+            ->select('kasharians.*', 'karyawans.nama_karyawan')
+            ->where('kasharians.id_cabang', $request->id_cabang)
+            ->where('kategori', 'Uang Makan')
+            ->whereDate('kasharians.created_at', Carbon::parse($request->date))
+            ->orderBy('kasharians.created_at', 'desc')->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Uang Makan diterima',
+            'data' => $kasharian,
+        ], 200);
+    }
+
+    public function add_data_uang_makan(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'kategori' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $kasharian = new Kasharian;
+        $kasharian->kategori = 'Uang Makan';
+        $kasharian->keterangan = $request->keterangan;
+        $kasharian->jumlah = $request->jumlah;
+        $kasharian->status = 'Keluar';
+        $kasharian->id_karyawan = $request->id_karyawan;
+        $kasharian->id_cabang = $request->id_cabang;
+        $kasharian->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Uang Makan Berhasil Ditambahkan',
+        ], 200);
+
+    }
 }
