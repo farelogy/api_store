@@ -125,7 +125,10 @@ class KasharianController extends Controller
     public function add_data_uang_makan(Request $request)
     {
         $validated = Validator::make($request->all(), [
-            'kategori' => 'required',
+            'id_cabang' => 'required',
+            'jumlah' => 'required',
+            'id_karyawan' => 'required',
+
         ]);
 
         if ($validated->fails()) {
