@@ -111,6 +111,7 @@ class KasharianController extends Controller
         $kasharian = Kasharian::leftjoin('karyawans', 'kasharians.id_karyawan', '=', 'karyawans.id')
             ->select('kasharians.*', 'karyawans.nama_karyawan')
             ->where('kasharians.id_cabang', $request->id_cabang)
+            ->where('kasharians.id_karyawan', $request->id_karyawan)
             ->where('kategori', 'Uang Makan')
             ->whereMonth('kasharians.created_at', Carbon::parse($request->date)->month)
             ->whereYear('kasharians.created_at', Carbon::parse($request->date)->year)
