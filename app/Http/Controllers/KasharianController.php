@@ -112,7 +112,8 @@ class KasharianController extends Controller
             ->select('kasharians.*', 'karyawans.nama_karyawan')
             ->where('kasharians.id_cabang', $request->id_cabang)
             ->where('kategori', 'Uang Makan')
-            ->whereDate('kasharians.created_at', Carbon::parse($request->date))
+            ->whereMonth('kasharians.created_at', Carbon::parse($request->date)->month)
+            ->whereYear('kasharians.created_at', Carbon::parse($request->date)->year)
             ->orderBy('kasharians.created_at', 'desc')->get();
 
         return response()->json([
