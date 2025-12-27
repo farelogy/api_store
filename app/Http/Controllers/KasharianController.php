@@ -149,6 +149,11 @@ class KasharianController extends Controller
         $kasharian->id_cabang = $request->id_cabang;
         $kasharian->save();
 
+        //update kas cabang
+        $update_kas_cabang = Cabang::find($request->id_cabang);
+        $update_kas_cabang->saldo = $update_kas_cabang->saldo - $request->jumlah;
+        $update_kas_cabang->save();
+
         return response()->json([
             'status' => 'Success',
             'message' => 'Uang Makan Berhasil Ditambahkan',
@@ -203,7 +208,15 @@ class KasharianController extends Controller
             ], 200);
         }
 
-        $kasharian = Kasharian::find($request->id_kas_harian)->delete();
+        $kasharian = Kasharian::find($request->id_kas_harian);
+
+        //update kas cabang
+        $update_kas_cabang = Cabang::find($request->id_cabang);
+        $update_kas_cabang->saldo = $update_kas_cabang->saldo + $kasharian->jumlah;
+        $update_kas_cabang->save();
+
+        //delete kas harian
+        $kasharian->delete();
 
         return response()->json([
             'status' => 'Success',
