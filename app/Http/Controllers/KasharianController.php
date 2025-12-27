@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
 use App\Models\Kasharian;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
