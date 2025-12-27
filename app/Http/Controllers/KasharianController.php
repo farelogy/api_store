@@ -155,4 +155,60 @@ class KasharianController extends Controller
         ], 200);
 
     }
+
+    public function edit_data_uang_makan(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'id_kas_harian' => 'required',
+            'jumlah' => 'required',
+            'id_karyawan' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $kasharian = Kasharian::find($request->id_kas_harian);
+        $kasharian->kategori = 'Uang Makan';
+        $kasharian->keterangan = $request->keterangan;
+        $kasharian->jumlah = $request->jumlah;
+        $kasharian->status = 'Keluar';
+        $kasharian->id_karyawan = $request->id_karyawan;
+        $kasharian->id_cabang = $request->id_cabang;
+        $kasharian->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Uang Makan Berhasil Diedit',
+        ], 200);
+
+    }
+
+    public function delete_data_uang_makan(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_kas_harian' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $kasharian = Kasharian::find($request->id_kas_harian)->delete();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Uang Makan Berhasil Ditambahkan',
+        ], 200);
+
+    }
 }
