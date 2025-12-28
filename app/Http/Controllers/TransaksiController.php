@@ -369,4 +369,64 @@ class TransaksiController extends Controller
             'data' => $get_piutang,
         ], 200);
     }
+
+    public function bayar_piutang_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'id_pembeli' => 'required',
+            'id_transaksi' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        //tabel Transaksi
+        $jumlahbayar = $request->jumlah_bayar;
+        $transaksi = Transaksi::find($request->id_transaksi);
+        $transaksi->jumlah_bayar = $transaksi->jumlah_bayar + $jumlahbayar;
+        $transaksi->status = $request->status;
+        $transaksi->save();
+
+        //record to kas harian dan pembayarans
+        if ($jumlahbayar != 0) {
+            $pembayaran = new Pembayaran;
+            $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
+            $pembayaran->id_pembeli = $id_pembeli;
+            $pembayaran->status = $request->status;
+            $pembayaran->jumlah_bayar = $jumlahbayar;
+            $pembayaran->save();
+
+            $detail_pembayaran = new DetailPembayaran;
+            $detail_pembayaran->id_pembayaran = $pembayaran->id;
+            $detail_pembayaran->id_transaksi = $request->id_transaksi;
+            $detail_pembayaran->save();
+
+            $kasharian = new Kasharian;
+            $kasharian->kategori = 'Pembayaran Utang';
+            $kasharian->keterangan = 'Transaksi '.$request->nama_transaksi;
+            $kasharian->id_pembeli = $request->id_pembeli;
+            $kasharian->jumlah = $jumlahbayar;
+            $kasharian->id_cabang = $request->id_cabang;
+            $kasharian->id_transaksi = $request->id_transaksi;
+            $kasharian->status = 'Masuk';
+            $kasharian->save();
+
+            //karena ada pembayaran maka perlu masuk juga ke saldo cabang
+            $update_cabang = Cabang::find($request->id_cabang);
+            $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
+            $update_cabang->save();
+
+        }
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Pembayaran Piutang Berhasil',
+        ], 200);
+
+    }
 }
