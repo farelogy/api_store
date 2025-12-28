@@ -396,7 +396,7 @@ class TransaksiController extends Controller
         if ($jumlahbayar != 0) {
             $pembayaran = new Pembayaran;
             $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
-            $pembayaran->id_pembeli = $id_pembeli;
+            $pembayaran->id_pembeli = $request->id_pembeli;
             $pembayaran->status = $request->status;
             $pembayaran->jumlah_bayar = $jumlahbayar;
             $pembayaran->save();
