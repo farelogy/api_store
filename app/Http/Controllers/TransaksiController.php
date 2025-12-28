@@ -351,7 +351,7 @@ class TransaksiController extends Controller
         //get Piutang Transaksi
         $get_piutang = Transaksi::leftjoin('pembelis', 'transaksis.id_pembeli', '=', 'pembelis.id')->
         leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
-        select('transaksis.*', 'pembelis.nama_pembeli', DB::raw('SUM(detailtransaksis.jumlah * detail_transaksi.harga_satuan) as total_harga'))->
+        select('transaksis.*', 'pembelis.nama_pembeli', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
         where('transaksis.id_cabang', $request->id_cabang)->
         where('transaksis.id_pembeli', $request->id_pembeli)->
         where('transaksis.status', 'Belum Lunas')->
