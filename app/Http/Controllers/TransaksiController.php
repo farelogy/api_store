@@ -386,11 +386,21 @@ class TransaksiController extends Controller
         }
 
         //tabel Transaksi
-        $jumlahbayar = $request->jumlah_bayar;
+        $jumlahbayar = floatval($request->jumlah_bayar);
+        $total_harga = floatval($request->total_harga);
+        $sisa_bayar = floatval($request->sisa_bayar);
+
         $transaksi = Transaksi::find($request->id_transaksi);
         $transaksi->jumlah_bayar = $transaksi->jumlah_bayar + $jumlahbayar;
         $transaksi->status = $request->status;
         $transaksi->save();
+
+        //jika bayar nya lebih
+        if ($jumlahbayar > $sisa_bayar) {
+            $get_pembeli = Pembeli::find($request->id_pembeli);
+            $get_pembeli->saldo = $get_pembeli->saldo + ($jumlahbayar - $sisa_bayar);
+            $get_pembeli->save();
+        }
 
         //record to kas harian dan pembayarans
         if ($jumlahbayar != 0) {
