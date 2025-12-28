@@ -332,4 +332,31 @@ class TransaksiController extends Controller
             'message' => 'Edit Detail Transaksi Berhasil',
         ], 200);
     }
+
+    public function get_piutang_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'id_pembeli' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        //get Piutang Transaksi
+        $get_piutang = Transaksi::leftjoin('pembelis', 'transaksis.id_pembeli', '=', 'pembelis.id')->select('transaksis.*', 'pembelis.nama_pembeli')->
+        where('transaksis.id_cabang', $request->id_cabang)->where('transaksis.id_pembeli', $request->id_pembeli)->orderby('transaksis.created_at', 'DESC')
+            ->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Piutang diterima',
+            'data' => $get_piutang,
+        ], 200);
+    }
 }

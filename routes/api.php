@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/get_transaksi', [TransaksiController::class, 'get_transaksi']);
     Route::post('/get_transaksi_cabang_detail', [TransaksiController::class, 'get_transaksi_cabang_detail']);
     Route::post('/edit_transaksi_cabang', [TransaksiController::class, 'edit_transaksi_cabang']);
+    Route::post('/get_piutang_cabang', [TransaksiController::class, 'get_piutang_cabang']);
 
     //route untuk data pembeli
     Route::post('/get_pembeli', [PembeliController::class, 'get_pembeli']);
