@@ -355,7 +355,7 @@ class TransaksiController extends Controller
         where('transaksis.id_cabang', $request->id_cabang)->
         where('transaksis.id_pembeli', $request->id_pembeli)->
         where('transaksis.status', 'Belum Lunas')->
-        groupby('transaksis.id')->
+        groupby('transaksis.*', 'pembelis.nama_pembeli')->
         orderby('transaksis.created_at', 'DESC')
             ->get();
 
