@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     use HasFactory;
+
+    public function details()
+    {
+        return $this->hasMany(Detailtransaksi::class, 'id_transaksi');
+    }
 }
