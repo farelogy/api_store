@@ -75,6 +75,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route untuk data pembeli
     Route::post('/get_pembeli', [PembeliController::class, 'get_pembeli']);
+    Route::post('/get_pembeli_satu', [PembeliController::class, 'get_pembeli_satu']);
     Route::post('/ceknamapembeli', [PembeliController::class, 'ceknamapembeli']);
 
     //route untuk karyawan
