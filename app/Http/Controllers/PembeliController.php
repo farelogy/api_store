@@ -20,7 +20,7 @@ class PembeliController extends Controller
 
     public function get_pembeli_satu(Request $request)
     {
-        $get_pembeli = Pembeli::find($request->id_pembeli);
+        $get_pembeli = Pembeli::where('id', $request->id_pembeli)->get();
 
         return response()->json([
             'status' => 'Success',
