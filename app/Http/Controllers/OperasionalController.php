@@ -27,7 +27,7 @@ class OperasionalController extends Controller
         $get_penjualan = Transaksi::leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
         select('transaksis.id', 'transaksis.nama_transaksi', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
         where('transaksis.id_cabang', $request->id_cabang)->
-        whereDate('transaksis.created_at', Carbon::parse($request->date))->
+        // whereDate('transaksis.created_at', Carbon::parse($request->date))->
         groupby('transaksis.id', 'transaksis.nama_transaksi')
             ->get();
 
