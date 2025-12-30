@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kasharian;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +37,7 @@ class OperasionalController extends Controller
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
-            'data' => ['penjualan' => $get_penjualan, 'pembayaran' => $get_pembayaran, 'uang_makan' => $get_uang_makan],
+            'data' => [$get_penjualan, $get_pembayaran, $get_uang_makan],
         ], 200);
 
     }
