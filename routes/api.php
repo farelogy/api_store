@@ -4,6 +4,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KasharianController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\OperasionalController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\TransaksiController;
@@ -94,5 +95,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_data_uang_makan', [KasharianController::class, 'edit_data_uang_makan']);
     Route::post('/delete_data_uang_makan', [KasharianController::class, 'delete_data_uang_makan']);
 
+    //route Operasional
+    Route::post('/get_operasional_cabang', [OperasionalController::class, 'get_operasional_cabang']);
+
     // Add more routes here tes
+
 });
