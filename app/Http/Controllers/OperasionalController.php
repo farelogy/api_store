@@ -37,7 +37,7 @@ class OperasionalController extends Controller
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
-            'data' => $get_penjualan,
+            'data' => [$get_penjualan, $get_pembayaran, $get_uang_makan],
         ], 200);
 
     }
