@@ -25,10 +25,9 @@ class OperasionalController extends Controller
         }
 
         $get_penjualan = Transaksi::leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
-        select('transaksis.id', 'transaksis.nama_transaksi', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
+        select(DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
         where('transaksis.id_cabang', $request->id_cabang)->
-        whereDate('transaksis.created_at', Carbon::parse($request->date))->
-        groupby('transaksis.id', 'transaksis.nama_transaksi')
+        whereDate('transaksis.created_at', Carbon::parse($request->date))
             ->get();
 
         $get_pembayaran = Kasharian::where('kategori', 'Pembelian Barang')->whereDate('kasharians.created_at', Carbon::parse($request->date))->get();
@@ -37,7 +36,7 @@ class OperasionalController extends Controller
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
-            'data' => [$get_penjualan, $get_pembayaran, $get_uang_makan],
+            'data' => $get_penjualan, $get_pembayaran,
         ], 200);
 
     }
