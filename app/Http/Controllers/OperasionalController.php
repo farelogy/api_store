@@ -28,15 +28,18 @@ class OperasionalController extends Controller
         select(DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
         where('transaksis.id_cabang', $request->id_cabang)->
         whereDate('transaksis.created_at', Carbon::parse($request->date))
-            ->get();
+            ->first();
 
-        $get_pembayaran = Kasharian::where('kategori', 'Pembelian Barang')->whereDate('kasharians.created_at', Carbon::parse($request->date))->get();
-        $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('kasharians.created_at', Carbon::parse($request->date))->get();
+        $get_pembayaran = Kasharian::where('kategori', 'Pembelian Barang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
+        $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
 
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
-            'data' => $get_penjualan,
+            'total_penjualan' => $get_penjualan->total_harga,
+            'total_pembayaran' => $get_pembayaran,
+            'total_uang_makan' => $get_uang_makan,
+
         ], 200);
 
     }
