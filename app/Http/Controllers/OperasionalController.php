@@ -31,8 +31,8 @@ class OperasionalController extends Controller
         groupby('transaksis.id', 'transaksis.nama_transaksi')
             ->get();
 
-        $get_pembayaran = Kasharian::where('kategori', 'Pembelian Barang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->get();
-        $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('transaksis.created_at', Carbon::parse($request->date))->get();
+        $get_pembayaran = Kasharian::where('kategori', 'Pembelian Barang')->whereDate('kasharians.created_at', Carbon::parse($request->date))->get();
+        $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('kasharians.created_at', Carbon::parse($request->date))->get();
 
         return response()->json([
             'status' => 'Success',
