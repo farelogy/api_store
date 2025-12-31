@@ -35,7 +35,7 @@ class OperasionalController extends Controller
             $total_penjualan = $get_penjualan->total_harga;
         }
 
-        $get_pembayaran = Kasharian::where('kategori', 'Pembelian Barang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
+        $get_pembayaran_utang = Kasharian::where('kategori', 'Pembayaran Utang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $operasional_lain = Kasharian::whereNotIn('kategori', ['Uang Makan', 'Pembelian Barang', 'Setoran'])->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
 
@@ -43,7 +43,7 @@ class OperasionalController extends Controller
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
             'total_penjualan' => $total_penjualan,
-            'total_pembayaran' => $get_pembayaran,
+            'total_pembayaran_utang' => $get_pembayaran_utang,
             'total_uang_makan' => $get_uang_makan,
 
         ], 200);
