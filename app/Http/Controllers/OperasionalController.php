@@ -35,6 +35,27 @@ class OperasionalController extends Controller
             $total_penjualan = $get_penjualan->total_harga;
         }
 
+        $get_hutang = Transaksi::leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
+        select(DB::raw('SUM(transaksis.jumlah_bayar) as terbayar'), DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
+        where('transaksis.id_cabang', $request->id_cabang)->
+        where('transaksis.status', 'Belum Lunas')->
+        whereDate('transaksis.created_at', Carbon::parse($request->date))
+            ->first();
+
+        if ($get_hutang->total_harga == null) {
+            $hutang_total_harga = 0;
+        } else {
+            $hutang_total_harga = $get_hutang->total_harga;
+        }
+
+        if ($get_hutang->terbayar == null) {
+            $hutang_terbayar = 0;
+        } else {
+            $hutang_terbayar = $get_hutang->terbayar;
+        }
+
+        $total_hutang = $hutang_terbayar - $hutang_total_harga;
+
         $get_pembayaran_utang = Kasharian::where('kategori', 'Pembayaran Utang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $operasional_lain = Kasharian::whereNotIn('kategori', ['Uang Makan', 'Pembelian Barang', 'Setoran'])->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
@@ -43,6 +64,7 @@ class OperasionalController extends Controller
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
             'total_penjualan' => $total_penjualan,
+            'total_utang' => $total_hutang,
             'total_pembayaran_utang' => $get_pembayaran_utang,
             'total_uang_makan' => $get_uang_makan,
 
