@@ -240,7 +240,7 @@ class TransaksiController extends Controller
                 $update_history = Historysaldocabang::find($id_history_saldo_cabang->id);
             }
             $update_history->id_cabang = $request->id_cabang;
-            $update_history->saldo = $update_kas_cabang->saldo;
+            $update_history->saldo = $update_cabang->saldo;
             $update_history->save();
 
         }
@@ -455,7 +455,7 @@ class TransaksiController extends Controller
                 $update_history = Historysaldocabang::find($id_history_saldo_cabang->id);
             }
             $update_history->id_cabang = $request->id_cabang;
-            $update_history->saldo = $update_kas_cabang->saldo;
+            $update_history->saldo = $update_cabang->saldo;
             $update_history->save();
 
         }
