@@ -163,9 +163,11 @@ class KasharianController extends Controller
         } else {
             $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->first();
 
-            $update_history = Historysaldocaban::find($id_history_saldo_cabang->id);
+            $update_history = Historysaldocabang::find($id_history_saldo_cabang->id);
         }
+        $update_history->id_cabang = $request->id_cabang;
         $update_history->saldo = $update_kas_cabang->saldo;
+        $update_history->save();
 
         return response()->json([
             'status' => 'Success',

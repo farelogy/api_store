@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Detailpembayaran;
 use App\Models\Detailtransaksi;
+use App\Models\Historysaldocabang;
 use App\Models\Historystok;
 use App\Models\Kasharian;
 use App\Models\Keranjang;
@@ -229,6 +230,19 @@ class TransaksiController extends Controller
             $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
             $update_cabang->save();
 
+            //update posisi saldo cabang terakhir hari itu
+            $history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->count();
+            if ($history_saldo_cabang == 0) {
+                $update_history = new Historysaldocabang;
+            } else {
+                $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->first();
+
+                $update_history = Historysaldocabang::find($id_history_saldo_cabang->id);
+            }
+            $update_history->id_cabang = $request->id_cabang;
+            $update_history->saldo = $update_kas_cabang->saldo;
+            $update_history->save();
+
         }
 
         return response()->json([
@@ -430,6 +444,19 @@ class TransaksiController extends Controller
             $update_cabang = Cabang::find($request->id_cabang);
             $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
             $update_cabang->save();
+
+            //update posisi saldo cabang terakhir hari itu
+            $history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->count();
+            if ($history_saldo_cabang == 0) {
+                $update_history = new Historysaldocabang;
+            } else {
+                $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->first();
+
+                $update_history = Historysaldocabang::find($id_history_saldo_cabang->id);
+            }
+            $update_history->id_cabang = $request->id_cabang;
+            $update_history->saldo = $update_kas_cabang->saldo;
+            $update_history->save();
 
         }
 
