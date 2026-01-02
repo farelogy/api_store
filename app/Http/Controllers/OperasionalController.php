@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
+use App\Models\Historysaldocabang;
 use App\Models\Kasharian;
 use App\Models\Transaksi;
 use Carbon\Carbon;
