@@ -6,6 +6,7 @@ use App\Http\Controllers\KasharianController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OperasionalController;
 use App\Http\Controllers\PembeliController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\TransaksiController;
 use App\Models\User;
@@ -97,6 +98,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_operasional_cabang', [OperasionalController::class, 'edit_operasional_cabang']);
     Route::post('/delete_operasional_cabang', [OperasionalController::class, 'delete_operasional_cabang']);
     Route::post('/add_operasional_cabang', [OperasionalController::class, 'add_operasional_cabang']);
+
+    //route Refund
+    Route::post('/get_transaksi_cabang_refund', [RefundController::class, 'get_transaksi_cabang_refund']);
 
     // Add more routes here tes
 
