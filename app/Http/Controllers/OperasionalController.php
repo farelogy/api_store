@@ -79,6 +79,30 @@ class OperasionalController extends Controller
 
     }
 
+    public function history_operasional_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $get_operasional_lain = Kasharian::where('kategori', 'Operasional Lainnya')->whereDate('created_at', Carbon::parse($request->date))->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data History Operasional diterima',
+            'data' => $get_operasional_lain,
+
+        ], 200);
+
+    }
+
     public function add_operasional_cabang(Request $request)
     {
         $validated = Validator::make($request->all(), [

@@ -93,6 +93,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route Operasional
     Route::post('/get_operasional_cabang', [OperasionalController::class, 'get_operasional_cabang']);
+    Route::post('/history_operasional_cabang', [OperasionalController::class, 'history_operasional_cabang']);
     Route::post('/edit_operasional_cabang', [OperasionalController::class, 'edit_operasional_cabang']);
     Route::post('/delete_operasional_cabang', [OperasionalController::class, 'delete_operasional_cabang']);
     Route::post('/add_operasional_cabang', [OperasionalController::class, 'add_operasional_cabang']);
