@@ -86,10 +86,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_karyawan', [KaryawanController::class, 'delete_karyawan']);
 
     //route Kas Harian atau operaional (ini relate dengan piutang dan transaksi)
-    Route::post('/tambah_operasional_cabang', [KasharianController::class, 'tambah_operasional_cabang']);
-    Route::post('/get_operasional_cabang', [KasharianController::class, 'get_operasional_cabang']);
-    Route::post('/edit_operasional_cabang', [KasharianController::class, 'edit_operasional_cabang']);
-    Route::post('/delete_operasional_cabang', [KasharianController::class, 'delete_operasional_cabang']);
     Route::post('/get_data_uang_makan', [KasharianController::class, 'get_data_uang_makan']);
     Route::post('/add_data_uang_makan', [KasharianController::class, 'add_data_uang_makan']);
     Route::post('/edit_data_uang_makan', [KasharianController::class, 'edit_data_uang_makan']);
@@ -97,6 +93,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route Operasional
     Route::post('/get_operasional_cabang', [OperasionalController::class, 'get_operasional_cabang']);
+    Route::post('/edit_operasional_cabang', [OperasionalController::class, 'edit_operasional_cabang']);
+    Route::post('/delete_operasional_cabang', [OperasionalController::class, 'delete_operasional_cabang']);
+    Route::post('/add_operasional_cabang', [OperasionalController::class, 'add_operasional_cabang']);
 
     // Add more routes here tes
 

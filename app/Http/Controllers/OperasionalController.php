@@ -58,7 +58,10 @@ class OperasionalController extends Controller
 
         $get_pembayaran_utang = Kasharian::where('kategori', 'Pembayaran Utang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
-        $operasional_lain = Kasharian::whereNotIn('kategori', ['Uang Makan', 'Pembelian Barang', 'Setoran'])->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
+        $operasional_lain_masuk = Kasharian::where('status', 'Masuk')->whereNotIn('kategori', ['Uang Makan', 'Pembelian Barang', 'Pembayaran Utang', 'Setoran Kas'])->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
+        $operasional_lain_keluar = Kasharian::where('status', 'Keluar')->whereNotIn('kategori', ['Uang Makan', 'Pembelian Barang', 'Pembayaran Utang', 'Setoran Kas'])->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
+        $total_operasional_lain = $operasional_lain_masuk - $operasional_lain_keluar;
+        $get_setoran = Kasharian::where('kategori', 'Setoran Kas')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
 
         return response()->json([
             'status' => 'Success',
@@ -67,8 +70,95 @@ class OperasionalController extends Controller
             'total_utang' => $total_hutang,
             'total_pembayaran_utang' => $get_pembayaran_utang,
             'total_uang_makan' => $get_uang_makan,
+            'total_operasional_lain' => $total_operasional_lain,
+            'total_setoran' => $get_setoran,
 
         ], 200);
 
+    }
+
+    public function add_operasional_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'kategori' => 'required',
+            'jumlah' => 'required',
+            'status' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $kasharian = new Kasharian;
+        $kasharian->kategori = $request->kategori;
+        $kasharian->keterangan = $request->keterangan;
+        $kasharian->jumlah = $request->jumlah;
+        $kasharian->status = $request->status;
+        $kasharian->id_cabang = $request->id_cabang;
+
+        $kasharian->save();
+
+        //update kas cabang
+        $update_kas_cabang = Cabang::find($request->id_cabang);
+        if ($request->status == 'Masuk') {
+            $update_kas_cabang->saldo = $update_kas_cabang->saldo + $request->jumlah;
+
+        } else {
+            $update_kas_cabang->saldo = $update_kas_cabang->saldo - $request->jumlah;
+        }
+        $update_kas_cabang->save();
+
+        //update posisi saldo cabang terakhir hari itu
+        $history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->count();
+        if ($history_saldo_cabang == 0) {
+            $update_history = new Historysaldocabang;
+        } else {
+            $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->first();
+
+            $update_history = Historysaldocabang::find($id_history_saldo_cabang->id);
+        }
+        $update_history->id_cabang = $request->id_cabang;
+        $update_history->saldo = $update_kas_cabang->saldo;
+        $update_history->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Operasional Berhasil Ditambahkan',
+        ], 200);
+
+    }
+
+    public function edit_operasional_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_kasharian' => 'required',
+            'kategori' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $kasharian = Kasharian::find($request->id_kasharian);
+        $kasharian->kategori = $request->kategori;
+        $kasharian->keterangan = $request->keterangan;
+        $kasharian->jumlah = $request->jumlah;
+        $kasharian->status = $request->status;
+        $kasharian->id_pembeli = $request->id_pembeli;
+        $kasharian->id_karyawan = $request->id_karyawan;
+        $kasharian->id_cabang = $request->id_cabang;
+        $karyawan->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Operasional Berhasil Diedit',
+        ], 200);
     }
 }
