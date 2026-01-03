@@ -105,7 +105,7 @@ class RefundController extends Controller
 
         return response()->json([
             'status' => 'Success',
-            'message' => $total_refund.'|'.$total_transaksi_belum_refund.'|'.$terbayar,
+            'message' => $total_refund.'|'.$request->total_transaksi_belum_refund.'|'.$request->terbayar,
         ], 200);
 
         //fokus ke table Pembeli dulu buat update saldonya
