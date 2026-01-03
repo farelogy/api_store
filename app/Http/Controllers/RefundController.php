@@ -103,7 +103,7 @@ class RefundController extends Controller
             if ($x->jumlah == $x->jumlah_refund) {
                 $get_detail_transaksi->delete();
             } else {
-                $get_detail_transaksi->jumlah = $x->jumlah_refund;
+                $get_detail_transaksi->jumlah = $get_detail_transaksi->jumlah - $x->jumlah_refund;
                 $get_detail_transaksi->save();
             }
         }
