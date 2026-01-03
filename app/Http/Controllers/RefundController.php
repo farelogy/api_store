@@ -98,18 +98,23 @@ class RefundController extends Controller
         $pembeli = Pembeli::find($request->id_pembeli);
         $status_transaksi = 'Belum Lunas';
 
+        //convert data masuk ke angka dulu, karena saat dikirim berupa string
+        $total_refund = floatval($request->total_refund);
+        $total_transaksi_belum_refund = floatval($request->total_transaksi_belum_refund);
+        $terbayar = floatval($request->terbayar);
+
         //fokus ke table Pembeli dulu buat update saldonya
         if ($request->status == 'Lunas') {
             //maka total refund akan masuk saldo pembeli
-            $pembeli->saldo = $pembeli->saldo + $request->total_refund;
+            $pembeli->saldo = $pembeli->saldo + $total_refund;
             $pembeli->save();
             $status_transaksi = $request->status;
         } else {
             //compare antara total harga dikurangi total refund dengan yang sudah terbayar
-            $total_harga_setelah_refund = $request->total_transaksi_belum_refund - $request->total_refund;
+            $total_harga_setelah_refund = $total_transaksi_belum_refund - $total_refund;
 
-            if ($request->terbayar >= $total_harga_setelah_refund) {
-                $pembeli->saldo = $pembeli->saldo + ($request->terbayar - $total_harga_setelah_refund);
+            if ($terbayar >= $total_harga_setelah_refund) {
+                $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_setelah_refund);
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
             }
