@@ -138,6 +138,7 @@ class RefundController extends Controller
             $history_stok->id_barang = $x->id_barang;
             $history_stok->id_cabang = $request->id_cabang;
             $history_stok->jumlah = $x->jumlah_refund;
+            $history_stok->status = 'Tambah';
             $history_stok->keterangan = 'Refund Barang';
             $history_stok->save();
 
