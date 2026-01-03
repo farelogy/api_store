@@ -74,4 +74,43 @@ class RefundController extends Controller
         ], 200);
 
     }
+
+    public function selesai_refund_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'id_transaksi' => 'required',
+            'data_refund' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        //convert item string json
+        $item = json_decode($request->data_refund);
+
+        //update detail transaksi
+        foreach ($item as $x) {
+            //find detail transaksi
+            $get_detail_transaksi = Detailtransaksi::find($x->id_detail_transaksi);
+
+            //compare jumlah lama dengan jumlah refund
+            if ($x->jumlah == $x->jumlah_refund) {
+                $get_detail_transaksi->delete();
+            } else {
+                $get_detail_transaksi->jumlah = $x->jumlah_refund;
+                $get_detail_transaksi->save();
+            }
+        }
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Refund Berhasil',
+        ], 200);
+    }
 }
