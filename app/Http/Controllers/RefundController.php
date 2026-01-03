@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailtransaksi;
+use App\Models\Historystok;
+use App\Models\Pembeli;
+use App\Models\StokBarang;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use DB;
@@ -91,6 +94,32 @@ class RefundController extends Controller
             ], 200);
         }
 
+        //ambil data pembeli
+        $pembeli = Pembeli::find($request->id_pembeli);
+        $status_transaksi = 'Belum Lunas';
+
+        //fokus ke table Pembeli dulu buat update saldonya
+        if ($request->status == 'Lunas') {
+            //maka total refund akan masuk saldo pembeli
+            $pembeli->saldo = $pembeli->saldo + $request->total_refund;
+            $pembeli->save();
+            $status_transaksi = $request->status;
+        } else {
+            //compare antara total harga dikurangi total refund dengan yang sudah terbayar
+            $total_harga_setelah_refund = $request->total_transaksi_belum_refund - $request->total_refund;
+
+            if ($request->terbayar >= $total_harga_setelah_refund) {
+                $pembeli->saldo = $pembeli->saldo + ($request->terbayar - $total_harga_setelah_refund);
+                $pembeli->save();
+                $status_transaksi = 'Lunas';
+            }
+        }
+
+        //fokus ke table transaksi jikalau statusnya bisa berganti dari Belum Lunas menjadi Lunas
+        $get_transaksi = Transaksi::find($request->id_transaksi);
+        $get_transaksi->status = $status_transaksi;
+        $get_transaksi->save();
+
         //convert item string json
         $item = json_decode($request->data_refund);
 
@@ -98,6 +127,19 @@ class RefundController extends Controller
         foreach ($item as $x) {
             //find detail transaksi
             $get_detail_transaksi = Detailtransaksi::find($x->id_detail_transaksi);
+
+            //update stok setelah refund
+            $get_stok_barang = StokBarang::where('id_barang', $x->id_barang)->where('id_cabang', $request->id_cabang)->first();
+            $stok_barang = StokBarang::find($get_stok_barang->id);
+            $stok_barang->stok = $stok_barang->stok + $x->jumlah_refund;
+
+            //update history stok
+            $history_stok = new Historystok;
+            $history_stok->id_barang = $x->id_barang;
+            $history_stok->id_cabang = $request->id_cabang;
+            $history_stok->jumlah = $x->jumlah_refund;
+            $history_stok->keterangan = 'Refund Barang';
+            $history_stok->save();
 
             //compare jumlah lama dengan jumlah refund
             if ($x->jumlah == $x->jumlah_refund) {
