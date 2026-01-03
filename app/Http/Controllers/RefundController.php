@@ -48,7 +48,7 @@ class RefundController extends Controller
         ], 200);
     }
 
-    public function fetchDataPembeli(Request $request)
+    public function get_detail_transaksi_cabang_refund(Request $request)
     {
         $validated = Validator::make($request->all(), [
             'id_cabang' => 'required',
