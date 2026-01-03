@@ -103,6 +103,11 @@ class RefundController extends Controller
         $total_transaksi_belum_refund = floatval($request->total_transaksi_belum_refund);
         $terbayar = floatval($request->terbayar);
 
+        return response()->json([
+            'status' => 'Success',
+            'message' => $total_refund.'|'.$total_transaksi_belum_refund.'|'.$terbayar,
+        ], 200);
+
         //fokus ke table Pembeli dulu buat update saldonya
         if ($request->status == 'Lunas') {
             //maka total refund akan masuk saldo pembeli
