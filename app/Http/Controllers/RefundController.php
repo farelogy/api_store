@@ -47,4 +47,30 @@ class RefundController extends Controller
             'data' => $get_transaksi_cabang_refund,
         ], 200);
     }
+
+    public function fetchDataPembeli(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'id_transaksi' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        //get list detail transaksi
+        $get_detail_transaksi = Detailtransaksi::where('id_cabang', $request->id_cabang)->where('id_transaksi', $request->id_transaksi)->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Detail Transaksi diterima',
+            'data' => $get_detail_transaksi,
+        ], 200);
+
+    }
 }

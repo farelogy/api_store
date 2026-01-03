@@ -101,6 +101,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //route Refund
     Route::post('/get_transaksi_cabang_refund', [RefundController::class, 'get_transaksi_cabang_refund']);
+    Route::post('/get_detail_transaksi_cabang_refund', [RefundController::class, 'get_detail_transaksi_cabang_refund']);
 
     // Add more routes here tes
 
