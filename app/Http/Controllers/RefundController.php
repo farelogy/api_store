@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Detailtransaksi;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use DB;
