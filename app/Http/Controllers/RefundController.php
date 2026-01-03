@@ -100,13 +100,8 @@ class RefundController extends Controller
 
         //convert data masuk ke angka dulu, karena saat dikirim berupa string
         $total_refund = floatval($request->total_refund);
-        $total_transaksi_belum_refund = floatval($request->total_transaksi_belum_refund);
+        $total_transaksi_sebelum_refund = floatval($request->total_transaksi_sebelum_refund);
         $terbayar = floatval($request->terbayar);
-
-        return response()->json([
-            'status' => 'Success',
-            'message' => $total_refund.'|'.$request->total_transaksi_belum_refund.'|'.$request->terbayar,
-        ], 200);
 
         //fokus ke table Pembeli dulu buat update saldonya
         if ($request->status == 'Lunas') {
@@ -116,7 +111,7 @@ class RefundController extends Controller
             $status_transaksi = $request->status;
         } else {
             //compare antara total harga dikurangi total refund dengan yang sudah terbayar
-            $total_harga_setelah_refund = $total_transaksi_belum_refund - $total_refund;
+            $total_harga_setelah_refund = $total_transaksi_sebelum_refund - $total_refund;
 
             if ($terbayar >= $total_harga_setelah_refund) {
                 $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_setelah_refund);
