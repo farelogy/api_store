@@ -147,9 +147,13 @@ class TransaksiController extends Controller
         $jumlahbayar = floatval($request->jumlah_bayar);
         $total_harga = floatval($request->total_harga);
 
+        $update_pembeli = Pembeli::find($id_pembeli);
+
         if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
-            $update_pembeli = Pembeli::find($id_pembeli);
             $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
+            $update_pembeli->save();
+        } else {
+            $update_pembeli->saldo = 0;
             $update_pembeli->save();
         }
 
@@ -167,7 +171,11 @@ class TransaksiController extends Controller
         $transaksi->nama_transaksi = $judul_transaksi;
         $transaksi->keterangan = $request->keterangan;
         $transaksi->status = $request->status;
-        $transaksi->jumlah_bayar = $jumlahbayar;
+        if ($request->status == 'Lunas') {
+            $transaksi->jumlah_bayar = $total_harga;
+        } else {
+            $transaksi->jumlah_bayar = $jumlahbayar + $saldopembeli;
+        }
         $transaksi->save();
 
         //get id transaksi
@@ -405,15 +413,24 @@ class TransaksiController extends Controller
         $sisa_bayar = floatval($request->sisa_bayar);
 
         $transaksi = Transaksi::find($request->id_transaksi);
-        $transaksi->jumlah_bayar = $transaksi->jumlah_bayar + $jumlahbayar;
+        if ($request->status == 'Lunas') {
+            $transaksi->jumlah_bayar = $total_harga;
+
+        } else {
+            $transaksi->jumlah_bayar = $transaksi->jumlah_bayar + $jumlahbayar + $request->saldo_pembeli;
+        }
         $transaksi->status = $request->status;
         $transaksi->save();
 
         //jika bayar nya lebih
+        $get_pembeli = Pembeli::find($request->id_pembeli);
         if ($jumlahbayar > $sisa_bayar) {
-            $get_pembeli = Pembeli::find($request->id_pembeli);
-            $get_pembeli->saldo = $get_pembeli->saldo + ($jumlahbayar - $sisa_bayar);
+            $get_pembeli->saldo = ($jumlahbayar - $sisa_bayar);
             $get_pembeli->save();
+        } else {
+            $get_pembeli->saldo = 0;
+            $get_pembeli->save();
+
         }
 
         //record to kas harian dan pembayarans
