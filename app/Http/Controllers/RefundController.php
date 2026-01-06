@@ -292,13 +292,13 @@ class RefundController extends Controller
         //pengurangan stok barang
         foreach ($item_ganti_barang as $y) {
             $get_stok = DB::table('stok_barang')->updateOrInsert(
-                ['id_barang' => $y->id_barang, 'id_cabang' => $request->id_cabang], // Condition to find the record
+                ['id_barang' => $y->id, 'id_cabang' => $request->id_cabang], // Condition to find the record
                 ['stok' => $y->stok - $y->stok_dibeli] // Values to update or insert
             );
 
             //put history stok
             $history_stok = new Historystok;
-            $history_stok->id_barang = $y->id_barang;
+            $history_stok->id_barang = $y->id;
             $history_stok->id_cabang = $request->id_cabang;
             $history_stok->jumlah = $y->stok_dibeli;
             $history_stok->status = 'Kurang';
