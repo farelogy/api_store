@@ -113,7 +113,7 @@ class RefundController extends Controller
             $pembeli->save();
             $status_transaksi = $request->status;
             $get_transaksi->status = $status_transaksi;
-            $get_transaksi->terbayar = $total_harga_setelah_refund;
+            $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
 
         } else {
             //compare antara total harga dikurangi total refund dengan yang sudah terbayar
@@ -123,7 +123,7 @@ class RefundController extends Controller
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
-                $get_transaksi->terbayar = $total_harga_setelah_refund;
+                $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
 
             }
         }
@@ -215,7 +215,7 @@ class RefundController extends Controller
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
-                $get_transaksi->terbayar = $total_harga_baru;
+                $get_transaksi->jumlah_bayar = $total_harga_baru;
 
             } else {
                 $status_transaksi = 'Belum Lunas';
@@ -232,7 +232,7 @@ class RefundController extends Controller
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
-                $get_transaksi->terbayar = $total_harga_baru;
+                $get_transaksi->jumlah_bayar = $total_harga_baru;
 
             } else {
                 $status_transaksi = 'Belum Lunas';
