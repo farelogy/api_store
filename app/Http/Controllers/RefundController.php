@@ -156,6 +156,14 @@ class RefundController extends Controller
             }
         }
 
+        //jika refund ini menghapus detail transaksi keseluruhan
+        $cek_jumlah_detail_transaksi = Detailtransaksi::where('id_transaksi', $request->id_transaksi)->count();
+        if ($cek_jumlah_detail_transaksi == 0) {
+            //hapus transaksi
+            $hapus_transaksi = Transaksi::find($request->id_transaksi);
+            $hapus_transaksi->delete();
+        }
+
         return response()->json([
             'status' => 'Success',
             'message' => 'Refund Berhasil',
@@ -186,21 +194,34 @@ class RefundController extends Controller
         $total_refund = floatval($request->total_refund);
         $total_transaksi_sebelum_refund = floatval($request->total_transaksi_sebelum_refund);
         $terbayar = floatval($request->terbayar);
+        $total_harga_ganti_barang = floatval($request->total_harga_ganti_barang);
 
         //fokus ke table Pembeli dulu buat update saldonya
         if ($request->status == 'Lunas') {
-            //maka total refund akan masuk saldo pembeli
-            $pembeli->saldo = $pembeli->saldo + $total_refund;
-            $pembeli->save();
-            $status_transaksi = $request->status;
-        } else {
-            //compare antara total harga dikurangi total refund dengan yang sudah terbayar
-            $total_harga_setelah_refund = $total_transaksi_sebelum_refund - $total_refund;
+            //lihat total harga baru yang sudah dikurangi refund dan ditambah ganti barang
+            $total_harga_baru = ($total_transaksi_sebelum_refund - $total_refund) + $total_harga_ganti_barang;
 
-            if ($terbayar >= $total_harga_setelah_refund) {
-                $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_setelah_refund);
+            //cek kondisi total harga lama dengan yang baru
+            if ($total_harga_baru <= $total_transaksi_sebelum_refund) {
+                $pembeli->saldo = $pembeli->saldo + ($total_transaksi_sebelum_refund - $total_harga_baru);
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
+
+            } else {
+                $status_transaksi = 'Belum Lunas';
+            }
+
+        } else {
+            $total_harga_baru = ($total_transaksi_sebelum_refund - $total_refund) + $total_harga_ganti_barang;
+
+            //cek kondisi total harga lama dengan yang baru
+            if ($terbayar >= $total_harga_baru) {
+                $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_baru);
+                $pembeli->save();
+                $status_transaksi = 'Lunas';
+
+            } else {
+                $status_transaksi = 'Belum Lunas';
             }
         }
 
@@ -211,6 +232,7 @@ class RefundController extends Controller
 
         //convert item string json
         $item = json_decode($request->data_refund);
+        $item_ganti_barang = json_decode($request->data_ganti_barang);
 
         //update detail transaksi
         foreach ($item as $x) {
@@ -238,6 +260,36 @@ class RefundController extends Controller
                 $get_detail_transaksi->jumlah = $get_detail_transaksi->jumlah - $x->jumlah_refund;
                 $get_detail_transaksi->save();
             }
+        }
+
+        //tambahkan ganti barangnya ke detail transaksi
+        //buat detail transaksi
+        foreach ($item_ganti_barang as $x) {
+            $detail_trans = new Detailtransaksi;
+            $detail_trans->id_transaksi = $id_trans;
+            $detail_trans->id_cabang = $request->id_cabang;
+            $detail_trans->id_barang = $x->id_barang;
+            $detail_trans->nama_barang = $x->nama_barang;
+            $detail_trans->jumlah = $x->stok_dibeli;
+            $detail_trans->harga_satuan = $x->harga;
+            $detail_trans->save();
+        }
+
+        //pengurangan stok barang
+        foreach ($item_ganti_barang as $y) {
+            $get_stok = DB::table('stok_barang')->updateOrInsert(
+                ['id_barang' => $y->id_barang, 'id_cabang' => $request->id_cabang], // Condition to find the record
+                ['stok' => $y->stok - $y->stok_dibeli] // Values to update or insert
+            );
+
+            //put history stok
+            $history_stok = new Historystok;
+            $history_stok->id_barang = $y->id_barang;
+            $history_stok->id_cabang = $request->id_cabang;
+            $history_stok->jumlah = $y->stok_dibeli;
+            $history_stok->status = 'Kurang';
+            $history_stok->save();
+
         }
 
         return response()->json([
