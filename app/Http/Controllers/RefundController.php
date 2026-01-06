@@ -280,7 +280,7 @@ class RefundController extends Controller
         //buat detail transaksi
         foreach ($item_ganti_barang as $x) {
             $detail_trans = new Detailtransaksi;
-            $detail_trans->id_transaksi = $id_trans;
+            $detail_trans->id_transaksi = $request->id_transaksi;
             $detail_trans->id_cabang = $request->id_cabang;
             $detail_trans->id_barang = $x->id_barang;
             $detail_trans->nama_barang = $x->nama_barang;
