@@ -96,12 +96,15 @@ class RefundController extends Controller
 
         //ambil data pembeli
         $pembeli = Pembeli::find($request->id_pembeli);
+        $get_transaksi = Transaksi::find($request->id_transaksi);
+
         $status_transaksi = 'Belum Lunas';
 
         //convert data masuk ke angka dulu, karena saat dikirim berupa string
         $total_refund = floatval($request->total_refund);
         $total_transaksi_sebelum_refund = floatval($request->total_transaksi_sebelum_refund);
         $terbayar = floatval($request->terbayar);
+        $total_harga_setelah_refund = $total_transaksi_sebelum_refund - $total_refund;
 
         //fokus ke table Pembeli dulu buat update saldonya
         if ($request->status == 'Lunas') {
@@ -109,20 +112,23 @@ class RefundController extends Controller
             $pembeli->saldo = $pembeli->saldo + $total_refund;
             $pembeli->save();
             $status_transaksi = $request->status;
+            $get_transaksi->status = $status_transaksi;
+            $get_transaksi->terbayar = $total_harga_setelah_refund;
+
         } else {
             //compare antara total harga dikurangi total refund dengan yang sudah terbayar
-            $total_harga_setelah_refund = $total_transaksi_sebelum_refund - $total_refund;
 
             if ($terbayar >= $total_harga_setelah_refund) {
                 $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_setelah_refund);
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
+                $get_transaksi->status = $status_transaksi;
+                $get_transaksi->terbayar = $total_harga_setelah_refund;
+
             }
         }
 
         //fokus ke table transaksi jikalau statusnya bisa berganti dari Belum Lunas menjadi Lunas
-        $get_transaksi = Transaksi::find($request->id_transaksi);
-        $get_transaksi->status = $status_transaksi;
         $get_transaksi->save();
 
         //convert item string json
@@ -188,6 +194,8 @@ class RefundController extends Controller
 
         //ambil data pembeli
         $pembeli = Pembeli::find($request->id_pembeli);
+        $get_transaksi = Transaksi::find($request->id_transaksi);
+
         $status_transaksi = 'Belum Lunas';
 
         //convert data masuk ke angka dulu, karena saat dikirim berupa string
@@ -206,9 +214,13 @@ class RefundController extends Controller
                 $pembeli->saldo = $pembeli->saldo + ($total_transaksi_sebelum_refund - $total_harga_baru);
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
+                $get_transaksi->status = $status_transaksi;
+                $get_transaksi->terbayar = $total_harga_baru;
 
             } else {
                 $status_transaksi = 'Belum Lunas';
+                $get_transaksi->status = $status_transaksi;
+
             }
 
         } else {
@@ -219,15 +231,17 @@ class RefundController extends Controller
                 $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_baru);
                 $pembeli->save();
                 $status_transaksi = 'Lunas';
+                $get_transaksi->status = $status_transaksi;
+                $get_transaksi->terbayar = $total_harga_baru;
 
             } else {
                 $status_transaksi = 'Belum Lunas';
+                $get_transaksi->status = $status_transaksi;
+
             }
         }
 
         //fokus ke table transaksi jikalau statusnya bisa berganti dari Belum Lunas menjadi Lunas
-        $get_transaksi = Transaksi::find($request->id_transaksi);
-        $get_transaksi->status = $status_transaksi;
         $get_transaksi->save();
 
         //convert item string json
