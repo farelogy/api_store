@@ -282,7 +282,7 @@ class RefundController extends Controller
             $detail_trans = new Detailtransaksi;
             $detail_trans->id_transaksi = $request->id_transaksi;
             $detail_trans->id_cabang = $request->id_cabang;
-            $detail_trans->id_barang = $x->id_barang;
+            $detail_trans->id_barang = $x->id;
             $detail_trans->nama_barang = $x->nama_barang;
             $detail_trans->jumlah = $x->stok_dibeli;
             $detail_trans->harga_satuan = $x->harga;
