@@ -5,6 +5,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KasharianController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OperasionalController;
+use App\Http\Controllers\OperstokController;
 use App\Http\Controllers\PembeliController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\StokController;
@@ -14,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 |
@@ -104,6 +104,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/get_detail_transaksi_cabang_refund', [RefundController::class, 'get_detail_transaksi_cabang_refund']);
     Route::post('/selesai_refund_cabang', [RefundController::class, 'selesai_refund_cabang']);
     Route::post('/ganti_barang_refund_cabang', [RefundController::class, 'ganti_barang_refund_cabang']);
+
+    //route Oper Stok Cabang
+    Route::post('/get_list_oper_stok_cabang', [OperstokController::class, 'get_list_oper_stok_cabang']);
+    Route::post('/get_history_oper_stok_cabang', [OperstokController::class, 'get_history_oper_stok_cabang']);
 
     // Add more routes here tes
 
