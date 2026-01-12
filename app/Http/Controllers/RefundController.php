@@ -131,6 +131,9 @@ class RefundController extends Controller
         //fokus ke table transaksi jikalau statusnya bisa berganti dari Belum Lunas menjadi Lunas
         $get_transaksi->save();
 
+        //convert item string json
+        $item = json_decode($request->data_refund);
+
         //update detail transaksi
         foreach ($item as $x) {
             //find detail transaksi
