@@ -96,11 +96,12 @@ class RefundController extends Controller
 
         //tes
         $get_stok_barang = StokBarang::where('id_barang', 392)->where('id_cabang', $request->id_cabang)->first();
+        $stok_barang = StokBarang::find($get_stok_barang->id);
 
         return response()->json([
             'status' => 'Success',
             'message' => 'Refund Berhasil',
-            'data' => $get_stok_barang,
+            'data' => $stok_barang,
         ], 200);
 
         //ambil data pembeli
