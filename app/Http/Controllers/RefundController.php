@@ -94,16 +94,6 @@ class RefundController extends Controller
             ], 200);
         }
 
-        //tes
-        $get_stok_barang = StokBarang::where('id_barang', 392)->where('id_cabang', $request->id_cabang)->first();
-        $stok_barang = StokBarang::find($get_stok_barang->id);
-
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Refund Berhasil',
-            'data' => $stok_barang,
-        ], 200);
-
         //ambil data pembeli
         $pembeli = Pembeli::find($request->id_pembeli);
         $get_transaksi = Transaksi::find($request->id_transaksi);
@@ -141,9 +131,6 @@ class RefundController extends Controller
         //fokus ke table transaksi jikalau statusnya bisa berganti dari Belum Lunas menjadi Lunas
         $get_transaksi->save();
 
-        //convert item string json
-        $item = json_decode($request->data_refund);
-
         //update detail transaksi
         foreach ($item as $x) {
             //find detail transaksi
@@ -153,6 +140,7 @@ class RefundController extends Controller
             $get_stok_barang = StokBarang::where('id_barang', $x->id_barang)->where('id_cabang', $request->id_cabang)->first();
             $stok_barang = StokBarang::find($get_stok_barang->id);
             $stok_barang->stok = $stok_barang->stok + $x->jumlah_refund;
+            $stok_barang->save();
 
             //update history stok
             $history_stok = new Historystok;
@@ -267,6 +255,7 @@ class RefundController extends Controller
             $get_stok_barang = StokBarang::where('id_barang', $x->id_barang)->where('id_cabang', $request->id_cabang)->first();
             $stok_barang = StokBarang::find($get_stok_barang->id);
             $stok_barang->stok = $stok_barang->stok + $x->jumlah_refund;
+            $stok_barang->save();
 
             //update history stok
             $history_stok = new Historystok;
