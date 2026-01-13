@@ -22,7 +22,8 @@ class OperstokController extends Controller
             ], 200);
         }
         $data_operstok = Operstok::leftJoin('cabang as from_cabang', 'operstoks.from_cabang', '=', 'from_cabang.id')->leftJoin('cabang as to_cabang', 'operstoks.to_cabang', '=', 'to_cabang.id')
-            ->select('operstoks.*', 'from_cabang.nama_cabang as from_cabang_nama', 'to_cabang.nama_cabang as to_cabang_nama')
+            ->leftJoin('barangs', 'operstoks.id_barang', '=', 'barangs.id')
+            ->select('operstoks.*', 'from_cabang.nama_cabang as from_cabang_nama', 'to_cabang.nama_cabang as to_cabang_nama', 'barangs.nama_barang as nama_barang')
             ->where('operstoks.from_cabang', $request->id_cabang)->orderBy('operstoks.created_at', 'DESC')->get();
 
         return response()->json([
@@ -45,7 +46,9 @@ class OperstokController extends Controller
             ], 200);
         }
         $data_operstok = Operstok::leftJoin('cabang as from_cabang', 'operstoks.from_cabang', '=', 'from_cabang.id')->leftJoin('cabang as to_cabang', 'operstoks.to_cabang', '=', 'to_cabang.id')
-            ->select('operstoks.*', 'from_cabang.nama_cabang as from_cabang_nama', 'to_cabang.nama_cabang as to_cabang_nama')->where('operstoks.from_cabang', $request->id_cabang)->whereMonth('created_at', Carbon::parse($request->date)->month)
+            ->leftJoin('barangs', 'operstoks.id_barang', '=', 'barangs.id')
+            ->select('operstoks.*', 'from_cabang.nama_cabang as from_cabang_nama', 'to_cabang.nama_cabang as to_cabang_nama', 'barangs.nama_barang as nama_barang')
+            ->where('operstoks.from_cabang', $request->id_cabang)->whereMonth('created_at', Carbon::parse($request->date)->month)
             ->whereYear('created_at', Carbon::parse($request->date)->year)->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
