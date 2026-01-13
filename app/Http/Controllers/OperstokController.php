@@ -54,4 +54,33 @@ class OperstokController extends Controller
             'data' => $data_operstok,
         ], 200);
     }
+
+    public function add_oper_stok_cabang(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+            'to_cabang' => 'required',
+            'jumlah' => 'required',
+            'id_barang' => 'nullable',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        $operstok = Operstok::create([
+            'from_cabang' => $request->id_cabang,
+            'to_cabang' => $request->to_cabang,
+            'stok_transfer' => $request->jumlah,
+            'id_barang' => $request->id_barang,
+        ]);
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Oper Stok berhasil ditambahkan',
+        ], 200);
+    }
 }
