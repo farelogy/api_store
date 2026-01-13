@@ -102,7 +102,7 @@ class OperstokController extends Controller
         }
 
         $operstok = Operstok::find($request->id_operstok);
-        if (!$operstok) {
+        if (! $operstok) {
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Oper Stok tidak ditemukan',
