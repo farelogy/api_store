@@ -76,6 +76,7 @@ class OperstokController extends Controller
             'to_cabang' => $request->to_cabang,
             'stok_transfer' => $request->jumlah,
             'id_barang' => $request->id_barang,
+            'approved' => 'Pending',
         ]);
 
         return response()->json([
