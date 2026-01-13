@@ -109,6 +109,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/get_list_oper_stok_cabang', [OperstokController::class, 'get_list_oper_stok_cabang']);
     Route::post('/get_history_oper_stok_cabang', [OperstokController::class, 'get_history_oper_stok_cabang']);
     Route::post('/add_oper_stok_cabang', [OperstokController::class, 'add_oper_stok_cabang']);
+    Route::post('/approve_oper_stok_cabang', [OperstokController::class, 'approve_oper_stok_cabang']);
 
     // Add more routes here tes
 
