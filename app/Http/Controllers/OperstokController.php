@@ -71,13 +71,13 @@ class OperstokController extends Controller
             ], 200);
         }
 
-        $operstok = Operstok::create([
-            'from_cabang' => $request->id_cabang,
-            'to_cabang' => $request->to_cabang,
-            'stok_transfer' => $request->jumlah,
-            'id_barang' => $request->id_barang,
-            'approved' => 'Pending',
-        ]);
+        $operstok = new Operstok;
+        $operstok->from_cabang = $request->id_cabang;
+        $operstok->to_cabang = $request->to_cabang;
+        $operstok->stok_transfer = $request->jumlah;
+        $operstok->id_barang = $request->id_barang ?? null;
+        $operstok->approved = 'Pending';
+        $operstok->save();
 
         return response()->json([
             'status' => 'Success',
