@@ -43,21 +43,24 @@ class OperasionalController extends Controller
         where('transaksis.id_cabang', $request->id_cabang)->
         where('transaksis.status', 'Belum Lunas')->
         whereDate('transaksis.created_at', Carbon::parse($request->date))
-            ->first();
+            ->get();
 
-        if ($get_hutang->total_harga == null) {
-            $hutang_total_harga = 0;
-        } else {
-            $hutang_total_harga = $get_hutang->total_harga;
+        $total_hutang = 0;
+        foreach ($get_hutang as $get_hutang) {
+            if ($get_hutang->total_harga == null) {
+                $hutang_total_harga = 0;
+            } else {
+                $hutang_total_harga = $get_hutang->total_harga;
+            }
+
+            if ($get_hutang->terbayar == null) {
+                $hutang_terbayar = 0;
+            } else {
+                $hutang_terbayar = $get_hutang->terbayar;
+            }
+
+            $total_hutang = $total_hutang + ($hutang_terbayar - $hutang_total_harga);
         }
-
-        if ($get_hutang->terbayar == null) {
-            $hutang_terbayar = 0;
-        } else {
-            $hutang_terbayar = $get_hutang->terbayar;
-        }
-
-        $total_hutang = $hutang_terbayar - $hutang_total_harga;
 
         $get_pembayaran_utang = Kasharian::where('kategori', 'Pembayaran Utang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
