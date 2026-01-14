@@ -72,13 +72,13 @@ class OperasionalController extends Controller
         return response()->json([
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
-            'total_penjualan' => $total_penjualan,
-            'total_utang' => $total_hutang,
-            'total_pembayaran_utang' => $get_pembayaran_utang,
-            'total_uang_makan' => $get_uang_makan,
-            'total_operasional_lain' => $total_operasional_lain,
-            'total_setoran' => $get_setoran,
-            'saldo_awal' => $saldo_awal,
+            'total_penjualan' => $total_penjualan ? $total_penjualan : 0,
+            'total_utang' => $total_hutang ? $total_hutang : 0,
+            'total_pembayaran_utang' => $get_pembayaran_utang ? $get_pembayaran_utang : 0,
+            'total_uang_makan' => $get_uang_makan ? $get_uang_makan : 0,
+            'total_operasional_lain' => $total_operasional_lain ? $total_operasional_lain : 0,
+            'total_setoran' => $get_setoran ? $get_setoran : 0,
+            'saldo_awal' => $saldo_awal ? $saldo_awal : 0,
 
         ], 200);
 
