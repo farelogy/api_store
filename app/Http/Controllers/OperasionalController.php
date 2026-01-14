@@ -67,7 +67,7 @@ class OperasionalController extends Controller
         $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::parse($request->date)->subDay())->first();
         $id_history_saldo_cabang_count = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::parse($request->date)->subDay())->count();
 
-        $saldo_awal = $id_history_saldo_cabang->saldo;
+        $saldo_awal = is_null($id_history_saldo_cabang->saldo) ? 0 : $id_history_saldo_cabang->saldo;
 
         return response()->json([
             'status' => 'Success',
