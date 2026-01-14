@@ -130,6 +130,19 @@ class TransaksiController extends Controller
             ], 200);
         }
 
+        //tambahkan pembelinya dulu
+        $ceknama = Pembeli::where('nama_pembeli', $request->nama_pembeli)->count();
+        if ($ceknama != 0) {
+            $id_pembeli = Pembeli::where('nama_pembeli', $request->nama_pembeli)->first();
+            $id_pembeli = $id_pembeli->id;
+        } else {
+            $new_pembeli = new Pembeli;
+            $new_pembeli->nama_pembeli = $request->nama_pembeli;
+            $new_pembeli->saldo = 0;
+            $new_pembeli->save();
+            $id_pembeli = $new_pembeli->id;
+        }
+
         //buat judul transaksi
         $judul_transaksi = 'TR-'.strtotime('now');
 
@@ -156,20 +169,7 @@ class TransaksiController extends Controller
 
         //get id transaksi
         $id_trans = Transaksi::where('nama_transaksi', $judul_transaksi)->first()->id;
-
-        //tambahkan pembelinya dulu
-        $ceknama = Pembeli::where('nama_pembeli', $request->nama_pembeli)->count();
-        if ($ceknama != 0) {
-            $id_pembeli = Pembeli::where('nama_pembeli', $request->nama_pembeli)->first();
-            $id_pembeli = $id_pembeli->id;
-        } else {
-            $new_pembeli = new Pembeli;
-            $new_pembeli->nama_pembeli = $request->nama_pembeli;
-            $new_pembeli->saldo = 0;
-            $new_pembeli->save();
-            $id_pembeli = $new_pembeli->id;
-        }
-
+        //update saldo pembeli
         $update_pembeli = Pembeli::find($id_pembeli);
 
         if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
