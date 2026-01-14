@@ -65,6 +65,8 @@ class OperasionalController extends Controller
         $total_operasional_lain = $operasional_lain_masuk - $operasional_lain_keluar;
         $get_setoran = Kasharian::where('kategori', 'Setoran Kas')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today()->subDay())->first();
+        $id_history_saldo_cabang_count = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today()->subDay())->count();
+
         $saldo_awal = $id_history_saldo_cabang->saldo;
 
         return response()->json([
@@ -76,7 +78,7 @@ class OperasionalController extends Controller
             'total_uang_makan' => $get_uang_makan,
             'total_operasional_lain' => $total_operasional_lain,
             'total_setoran' => $get_setoran,
-            'saldo_awal' => $saldo_awal,
+            'saldo_awal' => $id_history_saldo_cabang_count,
 
         ], 200);
 
