@@ -64,8 +64,8 @@ class OperasionalController extends Controller
         $operasional_lain_keluar = Kasharian::where('status', 'Keluar')->whereNotIn('kategori', ['Uang Makan', 'Pembelian Barang', 'Pembayaran Utang', 'Setoran Kas'])->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $total_operasional_lain = $operasional_lain_masuk - $operasional_lain_keluar;
         $get_setoran = Kasharian::where('kategori', 'Setoran Kas')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
-        $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today()->subDay())->first();
-        $id_history_saldo_cabang_count = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today()->subDay())->count();
+        $id_history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::parse($request->date)->subDay())->first();
+        $id_history_saldo_cabang_count = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::parse($request->date)->subDay())->count();
 
         $saldo_awal = $id_history_saldo_cabang->saldo;
 
