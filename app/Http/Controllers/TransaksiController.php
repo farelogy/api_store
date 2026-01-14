@@ -130,6 +130,9 @@ class TransaksiController extends Controller
             ], 200);
         }
 
+        //buat judul transaksi
+        $judul_transaksi = 'TR-'.strtotime('now');
+
         //tambahkan pembelinya dulu
         $ceknama = Pembeli::where('nama_pembeli', $request->nama_pembeli)->count();
         if ($ceknama != 0) {
@@ -175,8 +178,6 @@ class TransaksiController extends Controller
         //hapus keranjang
         Keranjang::where('id_cabang', $request->id_cabang)->delete();
 
-        //buat judul transaksi
-        $judul_transaksi = 'TR-'.strtotime('now');
         $transaksi = new Transaksi;
         $transaksi->id_cabang = $request->id_cabang;
         $transaksi->id_pembeli = $id_pembeli;
