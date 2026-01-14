@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Historysaldocabang;
 use App\Models\Kasharian;
+use App\Models\Kaspusat;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use DB;
@@ -137,6 +138,17 @@ class OperasionalController extends Controller
 
         $kasharian->save();
 
+        if ($request->kategori == 'Setoran Kas') {
+            //update kas pusat
+            $update_kas_pusat = Kaspusat::first();
+            if ($request->status == 'Keluar') {
+                $update_kas_pusat->saldo = $update_kas_pusat->saldo + $request->jumlah;
+
+            } else {
+                $update_kas_pusat->saldo = $update_kas_pusat->saldo - $request->jumlah;
+            }
+            $update_kas_pusat->save();
+        }
         //update kas cabang
         $update_kas_cabang = Cabang::find($request->id_cabang);
         if ($request->status == 'Masuk') {
