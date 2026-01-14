@@ -133,47 +133,10 @@ class TransaksiController extends Controller
         //buat judul transaksi
         $judul_transaksi = 'TR-'.strtotime('now');
 
-        //tambahkan pembelinya dulu
-        $ceknama = Pembeli::where('nama_pembeli', $request->nama_pembeli)->count();
-        if ($ceknama != 0) {
-            $id_pembeli = Pembeli::where('nama_pembeli', $request->nama_pembeli)->first();
-            $id_pembeli = $id_pembeli->id;
-        } else {
-            $new_pembeli = new Pembeli;
-            $new_pembeli->nama_pembeli = $request->nama_pembeli;
-            $new_pembeli->saldo = 0;
-            $new_pembeli->save();
-            $id_pembeli = $new_pembeli->id;
-        }
         // update saldo pembeli jika pembayaran transaksi berlebih
         $saldopembeli = floatval($request->saldo);
         $jumlahbayar = floatval($request->jumlah_bayar);
         $total_harga = floatval($request->total_harga);
-
-        $update_pembeli = Pembeli::find($id_pembeli);
-
-        if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
-            $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
-            $update_pembeli->save();
-
-            if ($update_pembeli->saldo > 0) {
-                $kasharian = new Kasharian;
-                $kasharian->kategori = 'Saldo Pembeli';
-                $kasharian->keterangan = 'Saldo lebih pembeli';
-                $kasharian->id_pembeli = $id_pembeli;
-                $kasharian->jumlah = $update_pembeli->saldo;
-                $kasharian->id_cabang = $request->id_cabang;
-                $kasharian->id_transaksi = $id_trans;
-                $kasharian->status = 'Masuk';
-                $kasharian->save();
-            }
-        } else {
-            $update_pembeli->saldo = 0;
-            $update_pembeli->save();
-        }
-
-        //convert item string json
-        $item = json_decode($request->item);
 
         //hapus keranjang
         Keranjang::where('id_cabang', $request->id_cabang)->delete();
@@ -193,6 +156,44 @@ class TransaksiController extends Controller
 
         //get id transaksi
         $id_trans = Transaksi::where('nama_transaksi', $judul_transaksi)->first()->id;
+
+        //tambahkan pembelinya dulu
+        $ceknama = Pembeli::where('nama_pembeli', $request->nama_pembeli)->count();
+        if ($ceknama != 0) {
+            $id_pembeli = Pembeli::where('nama_pembeli', $request->nama_pembeli)->first();
+            $id_pembeli = $id_pembeli->id;
+        } else {
+            $new_pembeli = new Pembeli;
+            $new_pembeli->nama_pembeli = $request->nama_pembeli;
+            $new_pembeli->saldo = 0;
+            $new_pembeli->save();
+            $id_pembeli = $new_pembeli->id;
+        }
+
+        $update_pembeli = Pembeli::find($id_pembeli);
+
+        if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
+            $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
+            $update_pembeli->save();
+
+            if ($update_pembeli->saldo > 0) {
+                $kasharian = new Kasharian;
+                $kasharian->kategori = 'Saldo Pembeli';
+                $kasharian->keterangan = 'Saldo lebih dari transaksi '.$judul_transaksi;
+                $kasharian->id_pembeli = $id_pembeli;
+                $kasharian->jumlah = $update_pembeli->saldo;
+                $kasharian->id_cabang = $request->id_cabang;
+                $kasharian->id_transaksi = $id_trans;
+                $kasharian->status = 'Masuk';
+                $kasharian->save();
+            }
+        } else {
+            $update_pembeli->saldo = 0;
+            $update_pembeli->save();
+        }
+
+        //convert item string json
+        $item = json_decode($request->item);
 
         //buat detail transaksi
         foreach ($item as $x) {
