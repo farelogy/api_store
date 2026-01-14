@@ -159,7 +159,7 @@ class TransaksiController extends Controller
             if ($update_pembeli->saldo > 0) {
                 $kasharian = new Kasharian;
                 $kasharian->kategori = 'Saldo Pembeli';
-                $kasharian->keterangan = 'Transaksi '.$judul_transaksi;
+                $kasharian->keterangan = 'Saldo lebih pembeli';
                 $kasharian->id_pembeli = $id_pembeli;
                 $kasharian->jumlah = $update_pembeli->saldo;
                 $kasharian->id_cabang = $request->id_cabang;
