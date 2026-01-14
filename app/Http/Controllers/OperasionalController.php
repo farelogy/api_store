@@ -78,7 +78,7 @@ class OperasionalController extends Controller
             'total_uang_makan' => $get_uang_makan,
             'total_operasional_lain' => $total_operasional_lain,
             'total_setoran' => $get_setoran,
-            'saldo_awal' => $id_history_saldo_cabang_count,
+            'saldo_awal' => $saldo_awal,
 
         ], 200);
 
