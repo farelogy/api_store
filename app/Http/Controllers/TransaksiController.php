@@ -152,6 +152,18 @@ class TransaksiController extends Controller
         if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
             $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
             $update_pembeli->save();
+
+            if ($update_pembeli->saldo > 0) {
+                $kasharian = new Kasharian;
+                $kasharian->kategori = 'Saldo Pembeli';
+                $kasharian->keterangan = 'Transaksi '.$judul_transaksi;
+                $kasharian->id_pembeli = $id_pembeli;
+                $kasharian->jumlah = $update_pembeli->saldo;
+                $kasharian->id_cabang = $request->id_cabang;
+                $kasharian->id_transaksi = $id_trans;
+                $kasharian->status = 'Masuk';
+                $kasharian->save();
+            }
         } else {
             $update_pembeli->saldo = 0;
             $update_pembeli->save();
