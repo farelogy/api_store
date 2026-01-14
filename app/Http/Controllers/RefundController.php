@@ -281,14 +281,25 @@ class RefundController extends Controller
         //tambahkan ganti barangnya ke detail transaksi
         //buat detail transaksi
         foreach ($item_ganti_barang as $x) {
-            $detail_trans = new Detailtransaksi;
-            $detail_trans->id_transaksi = $request->id_transaksi;
-            $detail_trans->id_cabang = $request->id_cabang;
-            $detail_trans->id_barang = $x->id;
-            $detail_trans->nama_barang = $x->nama_barang;
-            $detail_trans->jumlah = $x->stok_dibeli;
-            $detail_trans->harga_satuan = $x->harga;
-            $detail_trans->save();
+            //cek barang sudah ada ditransaksi sebelumnya atau belum
+            $cek_detail_transaksi = Detailtransaksi::where('id_transaksi', $request->id_transaksi)->where('id_barang', $x->id)->first();
+
+            if ($cek_detail_transaksi) {
+                //update jumlahnya saja
+                $detail_transaksi = Detailtransaksi::find($cek_detail_transaksi->id);
+                $detail_transaksi->jumlah = $detail_transaksi->jumlah + $x->stok_dibeli;
+                $detail_transaksi->save();
+
+            } else {
+                $detail_trans = new Detailtransaksi;
+                $detail_trans->id_transaksi = $request->id_transaksi;
+                $detail_trans->id_cabang = $request->id_cabang;
+                $detail_trans->id_barang = $x->id;
+                $detail_trans->nama_barang = $x->nama_barang;
+                $detail_trans->jumlah = $x->stok_dibeli;
+                $detail_trans->harga_satuan = $x->harga;
+                $detail_trans->save();
+            }
         }
 
         //pengurangan stok barang
