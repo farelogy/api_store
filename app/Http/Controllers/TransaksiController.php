@@ -458,10 +458,10 @@ class TransaksiController extends Controller
             $kasharian = new Kasharian;
             $kasharian->kategori = 'Saldo Pembeli';
             $kasharian->keterangan = 'Pemakaian Saldo Untuk Transaksi '.$judul_transaksi;
-            $kasharian->id_pembeli = $id_pembeli;
+            $kasharian->id_pembeli = $request->id_pembeli;
             $kasharian->jumlah = $get_pembeli->saldo;
             $kasharian->id_cabang = $request->id_cabang;
-            $kasharian->id_transaksi = $id_trans;
+            $kasharian->id_transaksi = $request->id_transaksi;
             $kasharian->status = 'Keluar';
             $kasharian->save();
         }
@@ -472,10 +472,10 @@ class TransaksiController extends Controller
             $kasharian = new Kasharian;
             $kasharian->kategori = 'Saldo Pembeli';
             $kasharian->keterangan = 'Saldo lebih dari Piutang transaksi '.$judul_transaksi;
-            $kasharian->id_pembeli = $id_pembeli;
+            $kasharian->id_pembeli = $request->id_pembeli;
             $kasharian->jumlah = $get_pembeli->saldo;
             $kasharian->id_cabang = $request->id_cabang;
-            $kasharian->id_transaksi = $id_trans;
+            $kasharian->id_transaksi = $request->id_transaksi;
             $kasharian->status = 'Masuk';
             $kasharian->save();
         } else {
