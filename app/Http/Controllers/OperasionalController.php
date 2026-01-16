@@ -43,6 +43,7 @@ class OperasionalController extends Controller
         where('transaksis.id_cabang', $request->id_cabang)->
         where('transaksis.status', 'Belum Lunas')->
         whereDate('transaksis.created_at', Carbon::parse($request->date))
+            ->groupBy('transaksis.id')
             ->get();
 
         $total_hutang = 0;
