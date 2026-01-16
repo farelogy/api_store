@@ -172,6 +172,20 @@ class TransaksiController extends Controller
         //update saldo pembeli
         $update_pembeli = Pembeli::find($id_pembeli);
 
+        //jika saldo pembeli lebih besar dari 0 maka harus masuk kas harian karena auto dipake juga saat checkout
+        if ($update_pembeli->saldo > 0) {
+            $kasharian = new Kasharian;
+            $kasharian->kategori = 'Saldo Pembeli';
+            $kasharian->keterangan = 'Pemakaian Saldo Untuk Transaksi '.$judul_transaksi;
+            $kasharian->id_pembeli = $id_pembeli;
+            $kasharian->jumlah = $update_pembeli->saldo;
+            $kasharian->id_cabang = $request->id_cabang;
+            $kasharian->id_transaksi = $id_trans;
+            $kasharian->status = 'Keluar';
+            $kasharian->save();
+        }
+
+        //Baru disini cek apabila saldo pembeli dan jumlah bayar bisa lebih dari total harga
         if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
             $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
             $update_pembeli->save();
@@ -427,6 +441,7 @@ class TransaksiController extends Controller
         $sisa_bayar = floatval($request->sisa_bayar);
 
         $transaksi = Transaksi::find($request->id_transaksi);
+        $judul_transaksi = $transaksi->nama_transaksi;
         if ($request->status == 'Lunas') {
             $transaksi->jumlah_bayar = $total_harga;
 
@@ -436,11 +451,33 @@ class TransaksiController extends Controller
         $transaksi->status = $request->status;
         $transaksi->save();
 
-        //jika bayar nya lebih
         $get_pembeli = Pembeli::find($request->id_pembeli);
+
+        //jika saldo pembeli lebih besar dari 0 maka harus masuk kas harian karena auto dipake juga saat bayar piutang
+        if ($get_pembeli->saldo > 0) {
+            $kasharian = new Kasharian;
+            $kasharian->kategori = 'Saldo Pembeli';
+            $kasharian->keterangan = 'Pemakaian Saldo Untuk Transaksi '.$judul_transaksi;
+            $kasharian->id_pembeli = $id_pembeli;
+            $kasharian->jumlah = $get_pembeli->saldo;
+            $kasharian->id_cabang = $request->id_cabang;
+            $kasharian->id_transaksi = $id_trans;
+            $kasharian->status = 'Keluar';
+            $kasharian->save();
+        }
+        //jika bayar nya lebih
         if ($jumlahbayar > $sisa_bayar) {
             $get_pembeli->saldo = ($jumlahbayar - $sisa_bayar);
             $get_pembeli->save();
+            $kasharian = new Kasharian;
+            $kasharian->kategori = 'Saldo Pembeli';
+            $kasharian->keterangan = 'Saldo lebih dari Piutang transaksi '.$judul_transaksi;
+            $kasharian->id_pembeli = $id_pembeli;
+            $kasharian->jumlah = $get_pembeli->saldo;
+            $kasharian->id_cabang = $request->id_cabang;
+            $kasharian->id_transaksi = $id_trans;
+            $kasharian->status = 'Masuk';
+            $kasharian->save();
         } else {
             $get_pembeli->saldo = 0;
             $get_pembeli->save();

@@ -97,6 +97,7 @@ class RefundController extends Controller
         //ambil data pembeli
         $pembeli = Pembeli::find($request->id_pembeli);
         $get_transaksi = Transaksi::find($request->id_transaksi);
+        $judul_transaksi = $get_transaksi->nama_transaksi;
 
         $status_transaksi = 'Belum Lunas';
 
@@ -111,6 +112,18 @@ class RefundController extends Controller
             //maka total refund akan masuk saldo pembeli
             $pembeli->saldo = $pembeli->saldo + $total_refund;
             $pembeli->save();
+
+            //masukkan juga ke kas harian
+            $kasharian = new Kasharian;
+            $kasharian->kategori = 'Saldo Pembeli';
+            $kasharian->keterangan = 'Saldo lebih dari Refund transaksi '.$judul_transaksi;
+            $kasharian->id_pembeli = $id_pembeli;
+            $kasharian->jumlah = $get_pembeli->saldo;
+            $kasharian->id_cabang = $request->id_cabang;
+            $kasharian->id_transaksi = $id_trans;
+            $kasharian->status = 'Masuk';
+            $kasharian->save();
+
             $status_transaksi = $request->status;
             $get_transaksi->status = $status_transaksi;
             $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
@@ -121,6 +134,17 @@ class RefundController extends Controller
             if ($terbayar >= $total_harga_setelah_refund) {
                 $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_setelah_refund);
                 $pembeli->save();
+                //masukkan juga ke kas harian
+                $kasharian = new Kasharian;
+                $kasharian->kategori = 'Saldo Pembeli';
+                $kasharian->keterangan = 'Saldo lebih dari Refund transaksi '.$judul_transaksi;
+                $kasharian->id_pembeli = $id_pembeli;
+                $kasharian->jumlah = $get_pembeli->saldo;
+                $kasharian->id_cabang = $request->id_cabang;
+                $kasharian->id_transaksi = $id_trans;
+                $kasharian->status = 'Masuk';
+                $kasharian->save();
+
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
                 $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
@@ -214,6 +238,15 @@ class RefundController extends Controller
             if ($total_harga_baru <= $total_transaksi_sebelum_refund) {
                 $pembeli->saldo = $pembeli->saldo + ($total_transaksi_sebelum_refund - $total_harga_baru);
                 $pembeli->save();
+
+                //update history stok
+                $history_stok = new Historystok;
+                $history_stok->id_barang = $x->id_barang;
+                $history_stok->id_cabang = $request->id_cabang;
+                $history_stok->jumlah = $pembeli->saldo;
+                $history_stok->status = 'Tambah';
+                $history_stok->keterangan = 'Refund Barang';
+                $history_stok->save();
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
                 $get_transaksi->jumlah_bayar = $total_harga_baru;
@@ -231,6 +264,15 @@ class RefundController extends Controller
             if ($terbayar >= $total_harga_baru) {
                 $pembeli->saldo = $pembeli->saldo + ($terbayar - $total_harga_baru);
                 $pembeli->save();
+                //update history stok
+                $history_stok = new Historystok;
+                $history_stok->id_barang = $x->id_barang;
+                $history_stok->id_cabang = $request->id_cabang;
+                $history_stok->jumlah = $pembeli->saldo;
+                $history_stok->status = 'Tambah';
+                $history_stok->keterangan = 'Refund Barang';
+                $history_stok->save();
+
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
                 $get_transaksi->jumlah_bayar = $total_harga_baru;
