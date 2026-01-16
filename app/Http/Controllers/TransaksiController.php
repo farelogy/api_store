@@ -170,7 +170,7 @@ class TransaksiController extends Controller
             $history_piutang->id_cabang = $request->id_cabang;
             $history_piutang->id_transaksi = $request->id_transaksi;
             $history_piutang->id_pembeli = $id_pembeli;
-            $history_piutang->jumlah_piutang = $total_harga - ($jumlahbayar + $saldopembeli);
+            $history_piutang->piutang = $total_harga - ($jumlahbayar + $saldopembeli);
             $history_piutang->save();
         }
         $transaksi->save();
