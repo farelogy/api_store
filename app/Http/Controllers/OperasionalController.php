@@ -39,7 +39,7 @@ class OperasionalController extends Controller
         }
 
         $get_hutang = Transaksi::leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
-        select('transaksis.id', DB::raw('SUM(transaksis.jumlah_bayar) as terbayar'), DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
+        select('transaksis.id', 'transaksis.jumlah_bayar as terbayar', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
         where('transaksis.id_cabang', $request->id_cabang)->
         where('transaksis.status', 'Belum Lunas')->
         whereDate('transaksis.created_at', Carbon::parse($request->date))
