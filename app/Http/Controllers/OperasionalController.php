@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Historypiutangcabang;
 use App\Models\Historysaldocabang;
 use App\Models\Kasharian;
 use App\Models\Kaspusat;
@@ -38,30 +39,31 @@ class OperasionalController extends Controller
             $total_penjualan = $get_penjualan->total_harga;
         }
 
-        $get_hutang = Transaksi::leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
-        select('transaksis.id', 'transaksis.jumlah_bayar as terbayar', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
-        where('transaksis.id_cabang', $request->id_cabang)->
-        where('transaksis.status', 'Belum Lunas')->
-        whereDate('transaksis.created_at', Carbon::parse($request->date))
-            ->groupBy('transaksis.id', 'transaksis.jumlah_bayar')
-            ->get();
+        // $get_hutang = Transaksi::leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
+        // select('transaksis.id', 'transaksis.jumlah_bayar as terbayar', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
+        // where('transaksis.id_cabang', $request->id_cabang)->
+        // where('transaksis.status', 'Belum Lunas')->
+        // whereDate('transaksis.created_at', Carbon::parse($request->date))
+        //     ->groupBy('transaksis.id', 'transaksis.jumlah_bayar')
+        //     ->get();
 
-        $total_hutang = 0;
-        foreach ($get_hutang as $get_hutang) {
-            if ($get_hutang->total_harga == null) {
-                $hutang_total_harga = 0;
-            } else {
-                $hutang_total_harga = $get_hutang->total_harga;
-            }
+        // $total_hutang = 0;
+        // foreach ($get_hutang as $get_hutang) {
+        //     if ($get_hutang->total_harga == null) {
+        //         $hutang_total_harga = 0;
+        //     } else {
+        //         $hutang_total_harga = $get_hutang->total_harga;
+        //     }
 
-            if ($get_hutang->terbayar == null) {
-                $hutang_terbayar = 0;
-            } else {
-                $hutang_terbayar = $get_hutang->terbayar;
-            }
+        //     if ($get_hutang->terbayar == null) {
+        //         $hutang_terbayar = 0;
+        //     } else {
+        //         $hutang_terbayar = $get_hutang->terbayar;
+        //     }
 
-            $total_hutang = $total_hutang + ($hutang_terbayar - $hutang_total_harga);
-        }
+        //     $total_hutang = $total_hutang + ($hutang_terbayar - $hutang_total_harga);
+        // }
+        $get_hutang = Historypiutangcabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::parse($request->date))->sum('piutang');
 
         $get_pembayaran_utang = Kasharian::where('kategori', 'Pembayaran Utang')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
         $get_uang_makan = Kasharian::where('kategori', 'Uang Makan')->whereDate('created_at', Carbon::parse($request->date))->sum('jumlah');
@@ -82,7 +84,7 @@ class OperasionalController extends Controller
             'status' => 'Success',
             'message' => 'Data Piutang diterima',
             'total_penjualan' => $total_penjualan ? $total_penjualan : 0,
-            'total_utang' => $total_hutang ? $total_hutang : 0,
+            'total_utang' => $get_hutang ? $get_hutang : 0,
             'total_pembayaran_utang' => $get_pembayaran_utang ? $get_pembayaran_utang : 0,
             'total_uang_makan' => $get_uang_makan ? $get_uang_makan : 0,
             'total_operasional_lain' => $total_operasional_lain ? $total_operasional_lain : 0,

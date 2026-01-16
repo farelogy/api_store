@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Detailpembayaran;
 use App\Models\Detailtransaksi;
+use App\Models\Historypiutangcabang;
 use App\Models\Historysaldocabang;
 use App\Models\Historystok;
 use App\Models\Kasharian;
@@ -164,6 +165,13 @@ class TransaksiController extends Controller
             $transaksi->jumlah_bayar = $total_harga;
         } else {
             $transaksi->jumlah_bayar = $jumlahbayar + $saldopembeli;
+            // transaksi menjadi piutang, catat ke history piutang cabang
+            $history_piutang = new Historypiutangcabang;
+            $history_piutang->id_cabang = $request->id_cabang;
+            $history_piutang->id_transaksi = $request->id_transaksi;
+            $history_piutang->id_pembeli = $id_pembeli;
+            $history_piutang->jumlah_piutang = $total_harga - ($jumlahbayar + $saldopembeli);
+            $history_piutang->save();
         }
         $transaksi->save();
 
