@@ -502,7 +502,7 @@ class TransaksiController extends Controller
             $kasharian->kategori = 'Pembayaran Utang';
             $kasharian->keterangan = 'Transaksi '.$request->nama_transaksi;
             $kasharian->id_pembeli = $request->id_pembeli;
-            $kasharian->jumlah = $jumlahbayar;
+            $kasharian->jumlah = $jumlahbayar - $get_pembeli->saldo;
             $kasharian->id_cabang = $request->id_cabang;
             $kasharian->id_transaksi = $request->id_transaksi;
             $kasharian->status = 'Masuk';
