@@ -121,7 +121,7 @@ class RefundController extends Controller
             $kasharian->id_pembeli = $request->id_pembeli;
             $kasharian->jumlah = $pembeli->saldo;
             $kasharian->id_cabang = $request->id_cabang;
-            $kasharian->id_transaksi = $id_trans;
+            $kasharian->id_transaksi = $request->id_transaksi;
             $kasharian->status = 'Masuk';
             $kasharian->save();
 
@@ -142,7 +142,7 @@ class RefundController extends Controller
                 $kasharian->id_pembeli = $request->id_pembeli;
                 $kasharian->jumlah = $pembeli->saldo;
                 $kasharian->id_cabang = $request->id_cabang;
-                $kasharian->id_transaksi = $id_trans;
+                $kasharian->id_transaksi = $request->id_transaksi;
                 $kasharian->status = 'Masuk';
                 $kasharian->save();
 
@@ -247,7 +247,7 @@ class RefundController extends Controller
                 $kasharian->id_pembeli = $request->id_pembeli;
                 $kasharian->jumlah = $pembeli->saldo;
                 $kasharian->id_cabang = $request->id_cabang;
-                $kasharian->id_transaksi = $id_trans;
+                $kasharian->id_transaksi = $request->id_transaksi;
                 $kasharian->status = 'Masuk';
                 $kasharian->save();
                 $status_transaksi = 'Lunas';
@@ -274,7 +274,7 @@ class RefundController extends Controller
                 $kasharian->id_pembeli = $request->id_pembeli;
                 $kasharian->jumlah = $pembeli->saldo;
                 $kasharian->id_cabang = $request->id_cabang;
-                $kasharian->id_transaksi = $id_trans;
+                $kasharian->id_transaksi = $request->id_transaksi;
                 $kasharian->status = 'Masuk';
                 $kasharian->save();
 
