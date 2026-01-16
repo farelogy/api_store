@@ -435,12 +435,6 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Pembayaran Piutang Berhasil',
-            'data' => $request->all(),
-        ], 200);
-
         //tabel Transaksi
         $jumlahbayar = floatval($request->jumlah_bayar);
         $total_harga = floatval($request->total_harga);
