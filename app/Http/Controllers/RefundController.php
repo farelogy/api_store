@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Detailtransaksi;
 use App\Models\Historystok;
+use App\Models\Kasharian;
 use App\Models\Pembeli;
 use App\Models\StokBarang;
 use App\Models\Transaksi;
