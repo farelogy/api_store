@@ -124,6 +124,7 @@ class RefundController extends Controller
             $kasharian->id_cabang = $request->id_cabang;
             $kasharian->id_transaksi = $request->id_transaksi;
             $kasharian->status = 'Masuk';
+            $kasharian->created_at = Carbon::parse($get_transaksi->created_at);
             $kasharian->save();
             //Karena setelah refund ini Lunas maka tidak ada piutang di transaksi ini sehingga pada history piutang harus dihapus
             $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->delete();
@@ -147,6 +148,8 @@ class RefundController extends Controller
                 $kasharian->id_cabang = $request->id_cabang;
                 $kasharian->id_transaksi = $request->id_transaksi;
                 $kasharian->status = 'Masuk';
+                $kasharian->created_at = Carbon::parse($get_transaksi->created_at);
+
                 $kasharian->save();
 
                 //Karena setelah refund ini Lunas maka tidak ada piutang di transaksi ini sehingga pada history piutang harus dihapus
