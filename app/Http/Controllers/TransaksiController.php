@@ -165,18 +165,22 @@ class TransaksiController extends Controller
             $transaksi->jumlah_bayar = $total_harga;
         } else {
             $transaksi->jumlah_bayar = $jumlahbayar + $saldopembeli;
-            // transaksi menjadi piutang, catat ke history piutang cabang
-            $history_piutang = new Historypiutangcabang;
-            $history_piutang->id_cabang = $request->id_cabang;
-            $history_piutang->id_transaksi = $request->id_transaksi;
-            $history_piutang->id_pembeli = $id_pembeli;
-            $history_piutang->piutang = $total_harga - ($jumlahbayar + $saldopembeli);
-            $history_piutang->save();
+
         }
         $transaksi->save();
 
         //get id transaksi
         $id_trans = Transaksi::where('nama_transaksi', $judul_transaksi)->first()->id;
+
+        if ($request->status == 'Belum Lunas') {
+            // transaksi menjadi piutang, catat ke history piutang cabang
+            $history_piutang = new Historypiutangcabang;
+            $history_piutang->id_cabang = $request->id_cabang;
+            $history_piutang->id_transaksi = $id_trans;
+            $history_piutang->id_pembeli = $id_pembeli;
+            $history_piutang->piutang = $total_harga - ($jumlahbayar + $saldopembeli);
+            $history_piutang->save();
+        }
         //update saldo pembeli
         $update_pembeli = Pembeli::find($id_pembeli);
 

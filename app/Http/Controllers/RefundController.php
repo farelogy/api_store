@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detailtransaksi;
+use App\Models\Historypiutangcabang;
 use App\Models\Historystok;
 use App\Models\Kasharian;
 use App\Models\Pembeli;
@@ -124,6 +125,8 @@ class RefundController extends Controller
             $kasharian->id_transaksi = $request->id_transaksi;
             $kasharian->status = 'Masuk';
             $kasharian->save();
+            //Karena setelah refund ini Lunas maka tidak ada piutang di transaksi ini sehingga pada history piutang harus dihapus
+            $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->delete();
 
             $status_transaksi = $request->status;
             $get_transaksi->status = $status_transaksi;
@@ -146,11 +149,39 @@ class RefundController extends Controller
                 $kasharian->status = 'Masuk';
                 $kasharian->save();
 
+                //Karena setelah refund ini Lunas maka tidak ada piutang di transaksi ini sehingga pada history piutang harus dihapus
+                $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->delete();
+
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
                 $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
 
+            } else {
+                $sisa_piutang_baru = $total_harga_setelah_refund - $terbayar;
+
+                //update history piutang dengan sisa piutang yang baru
+                $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->first();
+                if ($history_piutang) {
+                    $history_piutang_update = Historypiutangcabang::find($history_piutang->id);
+                    $history_piutang_update->piutang = $sisa_piutang_baru;
+                    $history_piutang_update->save();
+                } else {
+                    //jika history piutang belum ada maka buat baru
+                    $history_piutang_baru = new Historypiutangcabang;
+                    $history_piutang_baru->id_transaksi = $request->id_transaksi;
+                    $history_piutang_baru->id_cabang = $request->id_cabang;
+                    $history_piutang_baru->id_pembeli = $request->id_pembeli;
+                    $history_piutang_baru->piutang = $sisa_piutang_baru;
+                    $history_piutang_baru->created_at = Carbon::parse($get_transaksi->created_at);
+                    $history_piutang_baru->save();
+                }
+
+                $status_transaksi = 'Belum Lunas';
+                $get_transaksi->status = $status_transaksi;
+                $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
+
             }
+
         }
 
         //fokus ke table transaksi jikalau statusnya bisa berganti dari Belum Lunas menjadi Lunas
@@ -250,11 +281,34 @@ class RefundController extends Controller
                 $kasharian->id_transaksi = $request->id_transaksi;
                 $kasharian->status = 'Masuk';
                 $kasharian->save();
+
+                //Karena setelah refund ini Lunas maka tidak ada piutang di transaksi ini sehingga pada history piutang harus dihapus
+                $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->delete();
+
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
                 $get_transaksi->jumlah_bayar = $total_harga_baru;
 
             } else {
+
+                //Karena setelah refund ini masih Belum Lunas maka ada piutang di transaksi ini sehingga pada history piutang harus ditambahkan
+                $sisa_piutang_baru = $total_harga_baru - $terbayar;
+                //update history piutang dengan sisa piutang yang baru
+                $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->first();
+                if ($history_piutang) {
+                    $history_piutang->piutang = $sisa_piutang_baru;
+                    $history_piutang->save();
+                } else {
+                    //jika history piutang belum ada maka buat baru
+                    $history_piutang_baru = new Historypiutangcabang;
+                    $history_piutang_baru->id_transaksi = $request->id_transaksi;
+                    $history_piutang_baru->id_cabang = $request->id_cabang;
+                    $history_piutang_baru->id_pembeli = $request->id_pembeli;
+                    $history_piutang_baru->piutang = $sisa_piutang_baru;
+                    $history_piutang_baru->created_at = Carbon::parse($get_transaksi->created_at);
+                    $history_piutang_baru->save();
+                }
+
                 $status_transaksi = 'Belum Lunas';
                 $get_transaksi->status = $status_transaksi;
 
@@ -278,11 +332,31 @@ class RefundController extends Controller
                 $kasharian->status = 'Masuk';
                 $kasharian->save();
 
+                //Karena setelah refund ini Lunas maka tidak ada piutang di transaksi ini sehingga pada history piutang harus dihapus
+                $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->delete();
+
                 $status_transaksi = 'Lunas';
                 $get_transaksi->status = $status_transaksi;
                 $get_transaksi->jumlah_bayar = $total_harga_baru;
 
             } else {
+                //Karena setelah refund ini masih Belum Lunas maka ada piutang di transaksi ini sehingga pada history piutang harus ditambahkan
+                $sisa_piutang_baru = $total_harga_baru - $terbayar;
+                //update history piutang dengan sisa piutang yang baru
+                $history_piutang = Historypiutangcabang::where('id_transaksi', $request->id_transaksi)->first();
+                if ($history_piutang) {
+                    $history_piutang->piutang = $sisa_piutang_baru;
+                    $history_piutang->save();
+                } else {
+                    //jika history piutang belum ada maka buat baru
+                    $history_piutang_baru = new Historypiutangcabang;
+                    $history_piutang_baru->id_transaksi = $request->id_transaksi;
+                    $history_piutang_baru->id_cabang = $request->id_cabang;
+                    $history_piutang_baru->id_pembeli = $request->id_pembeli;
+                    $history_piutang_baru->piutang = $sisa_piutang_baru;
+                    $history_piutang_baru->created_at = Carbon::parse($get_transaksi->created_at);
+                    $history_piutang_baru->save();
+                }
                 $status_transaksi = 'Belum Lunas';
                 $get_transaksi->status = $status_transaksi;
 
