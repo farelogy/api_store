@@ -38,6 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/data_cabang_home2', [MainController::class, 'data_cabang_home2']);
     Route::post('/edit_cabang', [MainController::class, 'edit_cabang']);
     Route::post('/delete_cabang', [MainController::class, 'delete_cabang']);
+    Route::get('/get_kas_pusat', [MainController::class, 'get_kas_pusat']);
 
     //route untuk pengaturan user
     Route::get('/data_user', [MainController::class, 'data_user']);
