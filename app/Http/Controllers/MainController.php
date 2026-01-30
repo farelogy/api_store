@@ -406,4 +406,15 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = '".Carbon::
 
         ], 200);
     }
+
+    public function get_kas_pusat()
+    {
+        $total_kas = Kaspusat::first();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Kas Pusat Diterima',
+            'data' => $total_kas->saldo,
+        ], 200);
+    }
 }
