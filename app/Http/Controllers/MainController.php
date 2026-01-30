@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Cabang;
 use App\Models\Keranjang;
 use App\Models\Transaksi;
-use App\Models\Kaspusat;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
@@ -405,17 +404,6 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = '".Carbon::
             'message' => 'Data User Cabang Diterima',
             'data' => [$cek_cabang->nama_cabang, $cek_hub_cabang->id_cabang, $cek_cabang->nama_tb],
 
-        ], 200);
-    }
-
-    public function get_kas_pusat()
-    {
-        $kaspusat = Kaspusat::first();
-
-        return response()->json([
-            'status' => 'Success',
-            'message' => 'Data Kas Pusat Diterima',
-            'data' => $kaspusat->saldo,
         ], 200);
     }
 }
