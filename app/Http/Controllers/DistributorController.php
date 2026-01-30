@@ -6,7 +6,7 @@ use App\Models\Distributor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class DistibutorController extends Controller
+class DistributorController extends Controller
 {
     public function data_distributor(Request $request)
     {
