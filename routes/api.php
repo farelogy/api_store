@@ -118,5 +118,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add_distributor', [DistributorController::class, 'add_distributor']);
     Route::post('/edit_distributor', [DistributorController::class, 'edit_distributor']);
     Route::post('/delete_distributor', [DistributorController::class, 'delete_distributor']);
+    Route::post('/data_detail_distributor', [DistributorController::class, 'data_detail_distributor']);
 
 });

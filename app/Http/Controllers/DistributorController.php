@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Detailtransaksidistributor;
 use App\Models\Distributor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -64,5 +65,20 @@ class DistributorController extends Controller
         $distributor->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Distributor deleted successfully']);
+    }
+
+    public function data_detail_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_distributor' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $data_detail_distributor = Detailtransaksidistributor::find($request->id_distributor);
+
+        return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
     }
 }
