@@ -11,7 +11,11 @@ class DistributorController extends Controller
 {
     public function data_distributor(Request $request)
     {
-        $data = Distributor::orderBy('id', 'DESC')->get();
+        $data = Distributor::leftJoin('detailtransaksidistributors', 'distributors.id', '=', 'detailtransaksidistributors.id_distributor')
+            ->select('distributors.*',
+                DB::raw('SUM(detailtransaksidistributors.qty * detailtransaksidistributors.harga_satuan) as total_transaksi'))
+            ->groupby('distributors.id', 'distributors.nama_distributor', 'distributors.created_at', 'distributors.updated_at')
+            ->orderBy('distributors.id', 'DESC')->get();
 
         return response()->json(['status' => 'success', 'data' => $data]);
     }
@@ -77,7 +81,7 @@ class DistributorController extends Controller
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
         }
 
-        $data_detail_distributor = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)->get();
+        $data_detail_distributor = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)->orderBy('id', 'DESC')->get();
 
         return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
     }
