@@ -81,4 +81,31 @@ class DistributorController extends Controller
 
         return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
     }
+
+    public function add_detail_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_distributor' => 'required',
+            'id_barang' => 'required',
+            'nama_barang' => 'required',
+            'tanggal' => 'required',
+            'qty' => 'required',
+            'harga_satuan' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $detailtransaksidistributor = new Detailtransaksidistributor;
+        $detailtransaksidistributor->id_distributor = $request->id_distributor;
+        $detailtransaksidistributor->id_barang = $request->id_barang;
+        $detailtransaksidistributor->nama_barang = $request->nama_barang;
+        $detailtransaksidistributor->tanggal = $request->tanggal;
+        $detailtransaksidistributor->qty = $request->qty;
+        $detailtransaksidistributor->harga_satuan = $request->harga_satuan;
+        $detailtransaksidistributor->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Detail distributor added successfully']);
+    }
 }
