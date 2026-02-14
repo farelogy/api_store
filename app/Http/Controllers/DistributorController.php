@@ -97,6 +97,16 @@ class DistributorController extends Controller
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
         }
 
+        //cek jika record yang sama sudah ada
+        $existingRecord = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)
+            ->where('id_barang', $request->id_barang)
+            ->where('tanggal', $request->tanggal)
+            ->first();
+
+        if ($existingRecord) {
+            return response()->json(['status' => 'error', 'message' => 'Transaksi sudah ada untuk distributor ini dengan barang dan tanggal yang sama']);
+        }
+
         $detailtransaksidistributor = new Detailtransaksidistributor;
         $detailtransaksidistributor->id_distributor = $request->id_distributor;
         $detailtransaksidistributor->id_barang = $request->id_barang;
