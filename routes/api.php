@@ -120,5 +120,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/delete_distributor', [DistributorController::class, 'delete_distributor']);
     Route::post('/data_detail_distributor', [DistributorController::class, 'data_detail_distributor']);
     Route::post('/add_detail_distributor', [DistributorController::class, 'add_detail_distributor']);
+    Route::post('/delete_detail_distributor', [DistributorController::class, 'delete_detail_distributor']);
 
 });

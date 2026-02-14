@@ -123,4 +123,20 @@ class DistributorController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Detail distributor added successfully']);
     }
+
+    public function delete_detail_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:detailtransaksidistributors,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $detailtransaksidistributor = Detailtransaksidistributor::find($request->id);
+        $detailtransaksidistributor->delete();
+
+        return response()->json(['status' => 'success', 'message' => 'Detail distributor deleted successfully']);
+    }
 }
