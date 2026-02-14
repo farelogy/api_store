@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Detailtransaksidistributor;
 use App\Models\Distributor;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
