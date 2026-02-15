@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Detailtransaksidistributor;
 use App\Models\Distributor;
+use App\Models\Historydetailtransaksidistributor;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -138,5 +139,31 @@ class DistributorController extends Controller
         $detailtransaksidistributor->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Detail distributor deleted successfully']);
+    }
+
+    public function bayar_detail_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tanggal' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $detailtransaksidistributor = Detailtransaksidistributor::where('tanggal', $request->tanggal)->count();
+        if ($detailtransaksidistributor == 0) {
+            return response()->json(['status' => 'error', 'message' => 'Detail transaksi distributor tidak ditemukan']);
+        } else {
+            $detailtransaksidistributor = Detailtransaksidistributor::where('tanggal', $request->tanggal)->get();
+
+            foreach ($detailtransaksidistributor as $detailtransaksidistributor) {
+                Historydetailtransaksidistributor::create($detailtransaksidistributor->toArray());
+                $detailtransaksidistributor->delete();
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'Pembayaran tanggal '.$request->tanggal.' berhasil']);
+        }
+
     }
 }
