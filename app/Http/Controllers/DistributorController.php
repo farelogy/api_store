@@ -255,4 +255,44 @@ class DistributorController extends Controller
 
         return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
     }
+
+    public function add_detail_nota_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_distributor' => 'required',
+            'id_barang' => 'required',
+            'nama_barang' => 'required',
+            'tanggal' => 'required',
+            'qty' => 'required',
+            'harga_satuan' => 'required',
+            'nama_nota' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        //cek jika record yang sama sudah ada
+        $existingRecord = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)
+            ->where('id_barang', $request->id_barang)
+            ->where('tanggal', $request->tanggal)
+            ->first();
+
+        if ($existingRecord) {
+            return response()->json(['status' => 'error', 'message' => 'Transaksi sudah ada untuk distributor ini dengan barang dan tanggal yang sama']);
+        }
+
+        $detailtransaksidistributor = new Detailtransaksidistributor;
+        $detailtransaksidistributor->id_distributor = $request->id_distributor;
+        $detailtransaksidistributor->id_barang = $request->id_barang;
+        $detailtransaksidistributor->nama_barang = $request->nama_barang;
+        $detailtransaksidistributor->tanggal = $request->tanggal;
+        $detailtransaksidistributor->qty = $request->qty;
+        $detailtransaksidistributor->harga_satuan = $request->harga_satuan;
+        $detailtransaksidistributor->nota_distributor = $request->nama_nota;
+
+        $detailtransaksidistributor->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Detail distributor added successfully']);
+    }
 }
