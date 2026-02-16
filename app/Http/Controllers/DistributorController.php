@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Detailtransaksidistributor;
 use App\Models\Distributor;
 use App\Models\Historydetailtransaksidistributor;
+use App\Models\Notadistributor;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -183,5 +184,60 @@ class DistributorController extends Controller
             ->whereYear('tanggal', Carbon::parse($request->tanggal)->year)->orderBy('id', 'DESC')->get();
 
         return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
+    }
+
+    public function nota_data_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_distributor' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $data_nota_distributor = Notadistributor::where('id_distributor', $request->id_distributor)->orderBy('tanggal', 'ASC')->get();
+
+        return response()->json(['status' => 'success', 'data' => $data_nota_distributor]);
+    }
+
+    public function add_nota_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_distributor' => 'required',
+            'tanggal' => 'required',
+            'nama_nota' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $notadistributor = new Notadistributor;
+        $notadistributor->id_distributor = $request->id_distributor;
+        $notadistributor->tanggal = $request->tanggal;
+        $notadistributor->nama_nota = $request->nama_nota;
+        $notadistributor->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Nota distributor added successfully']);
+    }
+
+    public function delete_nota_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:notadistributors,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $notadistributor = Notadistributor::find($request->id);
+
+        //hapus semua detail transaksi distributor yang terkait dengan nota ini
+        Detailtransaksidistributor::where('id_distributor', $notadistributor->id_distributor)->delete();
+        $notadistributor->delete();
+
+        return response()->json(['status' => 'success', 'message' => 'Nota distributor deleted successfully']);
     }
 }
