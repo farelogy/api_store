@@ -239,4 +239,20 @@ class DistributorController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Nota distributor deleted successfully']);
     }
+
+    public function detail_nota_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_distributor' => 'required',
+            'nama_nota' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $data_detail_distributor = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)->where('nama_nota', $request->nama_nota)->orderBy('id', 'DESC')->get();
+
+        return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
+    }
 }

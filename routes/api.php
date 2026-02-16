@@ -127,5 +127,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add_nota_distributor', [DistributorController::class, 'add_nota_distributor']);
     Route::post('/delete_nota_distributor', [DistributorController::class, 'delete_nota_distributor']);
     Route::post('/bayar_nota_distributor', [DistributorController::class, 'bayar_nota_distributor']);
+    Route::post('/detail_nota_distributor', [DistributorController::class, 'detail_nota_distributor']);
 
 });
