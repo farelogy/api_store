@@ -99,6 +99,7 @@ class DistributorController extends Controller
             'tanggal' => 'required',
             'qty' => 'required',
             'harga_satuan' => 'required',
+            'nama_nota' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -107,6 +108,7 @@ class DistributorController extends Controller
 
         //cek jika record yang sama sudah ada
         $existingRecord = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)
+            ->where('nota_distributor', $request->nama_nota)
             ->where('id_barang', $request->id_barang)
             ->where('tanggal', $request->tanggal)
             ->first();
