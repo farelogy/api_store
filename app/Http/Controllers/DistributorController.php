@@ -251,7 +251,7 @@ class DistributorController extends Controller
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
         }
 
-        $data_detail_distributor = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)->where('nama_nota', $request->nama_nota)->orderBy('id', 'DESC')->get();
+        $data_detail_distributor = Detailtransaksidistributor::where('id_distributor', $request->id_distributor)->where('nota_distributor', $request->nama_nota)->orderBy('id', 'DESC')->get();
 
         return response()->json(['status' => 'success', 'data' => $data_detail_distributor]);
     }
