@@ -230,6 +230,7 @@ class DistributorController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:notadistributors,id',
+            'nama_nota' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -239,7 +240,7 @@ class DistributorController extends Controller
         $notadistributor = Notadistributor::find($request->id);
 
         //hapus semua detail transaksi distributor yang terkait dengan nota ini
-        Detailtransaksidistributor::where('id_distributor', $notadistributor->id_distributor)->delete();
+        Detailtransaksidistributor::where('id_distributor', $notadistributor->id_distributor)->where('nota_distributor', $request->nama_nota)->delete();
         $notadistributor->delete();
 
         return response()->json(['status' => 'success', 'message' => 'Nota distributor deleted successfully']);
