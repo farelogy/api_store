@@ -196,7 +196,12 @@ class DistributorController extends Controller
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
         }
 
-        $data_nota_distributor = Notadistributor::where('id_distributor', $request->id_distributor)->orderBy('tanggal', 'ASC')->get();
+        $data_nota_distributor = Notadistributor::leftJoin('detailtransaksidistributors', 'notadistributors.nama_nota', '=', 'detailtransaksidistributors.nota_distributor')
+            ->select('notadistributors.*',
+                DB::raw('SUM(detailtransaksidistributors.qty * detailtransaksidistributors.harga_satuan) as total_transaksi'), DB::raw('COUNT(*) as jumlah_item'))
+            ->where('notadistributors.id_distributor', $request->id_distributor)
+            ->groupby('notadistributors.id', 'notadistributors.nama_nota', 'notadistributors.tanggal', 'notadistributors.id_distributor', 'notadistributors.created_at', 'notadistributors.updated_at')
+            ->orderBy('tanggal', 'ASC')->get();
 
         return response()->json(['status' => 'success', 'data' => $data_nota_distributor]);
     }
