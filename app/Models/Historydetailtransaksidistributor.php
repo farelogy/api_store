@@ -12,6 +12,7 @@ class Historydetailtransaksidistributor extends Model
     protected $fillable = [
         'id',
         'id_distributor',
+        'nota_distributor',
         'id_barang',
         'nama_barang',
         'qty',

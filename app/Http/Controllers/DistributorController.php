@@ -303,4 +303,33 @@ class DistributorController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Detail distributor added successfully']);
     }
+
+    public function bayar_nota_distributor(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id_nota' => 'required',
+            'nama_nota' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        $detailtransaksidistributor = Detailtransaksidistributor::where('nota_distributor', $request->nama_nota)->count();
+        if ($detailtransaksidistributor == 0) {
+            return response()->json(['status' => 'error', 'message' => 'Detail transaksi distributor tidak ditemukan']);
+        } else {
+            $detailtransaksidistributor = Detailtransaksidistributor::where('nota_distributor', $request->nama_nota)->get();
+
+            foreach ($detailtransaksidistributor as $detailtransaksidistributor) {
+                Historydetailtransaksidistributor::create($detailtransaksidistributor->toArray());
+                $detailtransaksidistributor->delete();
+            }
+            $notadistributor = Notadistributor::find($request->id_nota);
+            $notadistributor->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Pembayaran nota '.$request->nama_nota.' berhasil']);
+        }
+
+    }
 }
