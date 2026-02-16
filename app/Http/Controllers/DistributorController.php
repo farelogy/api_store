@@ -206,7 +206,6 @@ class DistributorController extends Controller
         $validator = Validator::make($request->all(), [
             'id_distributor' => 'required',
             'tanggal' => 'required',
-            'nama_nota' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -216,7 +215,7 @@ class DistributorController extends Controller
         $notadistributor = new Notadistributor;
         $notadistributor->id_distributor = $request->id_distributor;
         $notadistributor->tanggal = $request->tanggal;
-        $notadistributor->nama_nota = $request->nama_nota;
+        $notadistributor->nama_nota = 'Nota '.$request->nama_distributor.' '.Carbon::now()->timestamp.' - '.Carbon::parse($request->tanggal)->format('d M Y');
         $notadistributor->save();
 
         return response()->json(['status' => 'success', 'message' => 'Nota distributor added successfully']);
