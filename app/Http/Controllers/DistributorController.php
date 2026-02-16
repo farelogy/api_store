@@ -198,7 +198,7 @@ class DistributorController extends Controller
 
         $data_nota_distributor = Notadistributor::leftJoin('detailtransaksidistributors', 'notadistributors.nama_nota', '=', 'detailtransaksidistributors.nota_distributor')
             ->select('notadistributors.*',
-                DB::raw('SUM(detailtransaksidistributors.qty * detailtransaksidistributors.harga_satuan) as total_transaksi'), DB::raw('COUNT(*) as jumlah_item'))
+                DB::raw('SUM(detailtransaksidistributors.qty * detailtransaksidistributors.harga_satuan) as total_transaksi'), DB::raw('COUNT(detailtransaksidistributors.id) as jumlah_item'))
             ->where('notadistributors.id_distributor', $request->id_distributor)
             ->groupby('notadistributors.id', 'notadistributors.nama_nota', 'notadistributors.tanggal', 'notadistributors.id_distributor', 'notadistributors.created_at', 'notadistributors.updated_at')
             ->orderBy('tanggal', 'ASC')->get();
