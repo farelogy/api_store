@@ -79,7 +79,8 @@ class OperasionalController extends Controller
         if ($id_history_saldo_cabang) {
             $saldo_awal = $id_history_saldo_cabang->saldo ?? 0;
         } else {
-            $saldo_awal = 0;
+            $latest = Historysaldocabang::where('id_cabang', $request->id_cabang)->where('created_at', '<', Carbon::parse($request->date))->orderBy('created_at', 'DESC')->first();
+            $saldo_awal = $latest ? $latest->saldo : 0;
         }
 
         return response()->json([
