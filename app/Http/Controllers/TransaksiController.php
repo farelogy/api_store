@@ -334,7 +334,7 @@ class TransaksiController extends Controller
             $join->on('transaksis.id', '=', 'harga_total_transaksi.id_transaksi');
         })
             ->leftjoin('pembelis', 'transaksis.id_pembeli', '=', 'pembelis.id')
-            ->select('transaksis.*', 'pembelis.nama_pembeli', 'harga_total_transaksi.total_rupiah_transaksi', 'cabang.nama_cabang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at', 'DESC')->get();
+            ->select('transaksis.*', 'pembelis.nama_pembeli', 'harga_total_transaksi.total_rupiah_transaksi', 'cabang.nama_cabang', 'cabang.nama_tb')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at', 'DESC')->get();
 
         return response()->json([
             'status' => 'Success',
