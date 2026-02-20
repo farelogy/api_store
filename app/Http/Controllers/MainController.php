@@ -115,6 +115,7 @@ class MainController extends Controller
         $validated = Validator::make($request->all(), [
             'nama_cabang' => 'required',
             'saldo' => 'required',
+            'nama_tb' => 'required',
         ]);
 
         if ($validated->fails()) {
@@ -127,6 +128,7 @@ class MainController extends Controller
         $cabang = new Cabang;
         $cabang->nama_cabang = $request->nama_cabang;
         $cabang->saldo = $request->saldo;
+        $cabang->nama_tb = $request->nama_tb;
         $cabang->save();
 
         return response()->json([
@@ -193,6 +195,7 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = '".Carbon::
             'id_cabang' => 'required',
             'nama_cabang' => 'required',
             'saldo' => 'required',
+            'nama_tb' => 'required',
         ]);
 
         if ($validated->fails()) {
@@ -205,6 +208,7 @@ LEFT JOIN barangs c ON b.id_barang = c.id where DATE(a.created_at) = '".Carbon::
         $cabang = Cabang::find($request->id_cabang);
         $cabang->nama_cabang = $request->nama_cabang;
         $cabang->saldo = $request->saldo;
+        $cabang->nama_tb = $request->nama_tb;
         $cabang->save();
 
         return response()->json([
