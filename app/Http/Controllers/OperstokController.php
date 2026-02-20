@@ -24,8 +24,18 @@ class OperstokController extends Controller
         ], 200);
     }
 
-    public function get_history_oper_stok()
+    public function get_history_oper_stok(Request $request)
     {
+        $validated = Validator::make($request->all(), [
+            'date' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
 
         $data_operstok = Operstok::leftJoin('cabang as from_cabang', 'operstoks.from_cabang', '=', 'from_cabang.id')->leftJoin('cabang as to_cabang', 'operstoks.to_cabang', '=', 'to_cabang.id')
             ->leftJoin('barangs', 'operstoks.id_barang', '=', 'barangs.id')
