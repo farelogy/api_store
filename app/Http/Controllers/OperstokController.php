@@ -140,28 +140,31 @@ class OperstokController extends Controller
                 'message' => 'Oper Stok tidak ditemukan',
             ], 200);
         }
-        //pindah stok di table stok barang
-        $stok_barang_from = StokBarang::where('id_cabang', $operstok->from_cabang)->where('id_barang', $operstok->id_barang)->first();
-        if ($stok_barang_from) {
-            $stok_barang_from->stok = $stok_barang_from->stok - $operstok->stok_transfer;
-            $stok_barang_from->save();
-        } else {
-            return response()->json([
-                'status' => 'Error',
-                'message' => 'Stok Barang di cabang asal tidak ditemukan',
-            ], 200);
-        }
 
-        $stok_barang_to = StokBarang::where('id_cabang', $operstok->to_cabang)->where('id_barang', $operstok->id_barang)->first();
-        if ($stok_barang_to) {
-            $stok_barang_to->stok = $stok_barang_to->stok + $operstok->stok_transfer;
-            $stok_barang_to->save();
-        } else {
-            $new_stok_barang_to = new StokBarang;
-            $new_stok_barang_to->id_cabang = $operstok->to_cabang;
-            $new_stok_barang_to->id_barang = $operstok->id_barang;
-            $new_stok_barang_to->stok = $operstok->stok_transfer;
-            $new_stok_barang_to->save();
+        if ($request->approval == 'Approve') {
+            //pindah stok di table stok barang
+            $stok_barang_from = StokBarang::where('id_cabang', $operstok->from_cabang)->where('id_barang', $operstok->id_barang)->first();
+            if ($stok_barang_from) {
+                $stok_barang_from->stok = $stok_barang_from->stok - $operstok->stok_transfer;
+                $stok_barang_from->save();
+            } else {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Stok Barang di cabang asal tidak ditemukan',
+                ], 200);
+            }
+
+            $stok_barang_to = StokBarang::where('id_cabang', $operstok->to_cabang)->where('id_barang', $operstok->id_barang)->first();
+            if ($stok_barang_to) {
+                $stok_barang_to->stok = $stok_barang_to->stok + $operstok->stok_transfer;
+                $stok_barang_to->save();
+            } else {
+                $new_stok_barang_to = new StokBarang;
+                $new_stok_barang_to->id_cabang = $operstok->to_cabang;
+                $new_stok_barang_to->id_barang = $operstok->id_barang;
+                $new_stok_barang_to->stok = $operstok->stok_transfer;
+                $new_stok_barang_to->save();
+            }
         }
 
         $operstok->approved = $request->approval;
