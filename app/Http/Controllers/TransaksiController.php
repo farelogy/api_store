@@ -332,7 +332,9 @@ class TransaksiController extends Controller
         //get list Transaksi
         $get_transaksi = Transaksi::leftjoin('cabang', 'cabang.id', '=', 'transaksis.id_cabang')->leftJoinSub($harga_total_transaksi, 'harga_total_transaksi', function (JoinClause $join) {
             $join->on('transaksis.id', '=', 'harga_total_transaksi.id_transaksi');
-        })->select('transaksis.*', 'harga_total_transaksi.total_rupiah_transaksi', 'cabang.nama_cabang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at', 'DESC')->get();
+        })
+            ->leftjoin('pembelis', 'transaksis.id_pembeli', '=', 'pembelis.id')
+            ->select('transaksis.*', 'pembelis.nama_pembeli', 'harga_total_transaksi.total_rupiah_transaksi', 'cabang.nama_cabang')->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at', 'DESC')->get();
 
         return response()->json([
             'status' => 'Success',
