@@ -141,7 +141,7 @@ class OperstokController extends Controller
             ], 200);
         }
 
-        if ($request->approval == 'Approve') {
+        if ($request->approval == 'Approved') {
             //pindah stok di table stok barang
             $stok_barang_from = StokBarang::where('id_cabang', $operstok->from_cabang)->where('id_barang', $operstok->id_barang)->first();
             if ($stok_barang_from) {
