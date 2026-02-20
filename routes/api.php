@@ -113,7 +113,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/get_list_oper_stok', [OperstokController::class, 'get_list_oper_stok']);
     Route::get('/get_history_oper_stok', [OperstokController::class, 'get_history_oper_stok']);
     Route::post('/add_oper_stok_cabang', [OperstokController::class, 'add_oper_stok_cabang']);
-    Route::post('/approve_oper_stok_cabang', [OperstokController::class, 'approve_oper_stok_cabang']);
+    Route::post('/approve_oper_stok', [OperstokController::class, 'approve_oper_stok']);
 
     //route distributor - Admin
     Route::get('/data_distributor', [DistributorController::class, 'data_distributor']);
