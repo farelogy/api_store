@@ -9,6 +9,36 @@ use Illuminate\Support\Facades\Validator;
 
 class OperstokController extends Controller
 {
+    public function get_list_oper_stok()
+    {
+        $data_operstok = Operstok::leftJoin('cabang as from_cabang', 'operstoks.from_cabang', '=', 'from_cabang.id')->leftJoin('cabang as to_cabang', 'operstoks.to_cabang', '=', 'to_cabang.id')
+            ->leftJoin('barangs', 'operstoks.id_barang', '=', 'barangs.id')
+            ->select('operstoks.*', 'from_cabang.nama_cabang as from_cabang_nama', 'to_cabang.nama_cabang as to_cabang_nama', 'barangs.nama_barang as nama_barang')
+            ->where('operstoks.approved', 'Pending')->orderBy('operstoks.created_at', 'DESC')->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Oper Stok diterima',
+            'data' => $data_operstok,
+        ], 200);
+    }
+
+    public function get_history_oper_stok()
+    {
+
+        $data_operstok = Operstok::leftJoin('cabang as from_cabang', 'operstoks.from_cabang', '=', 'from_cabang.id')->leftJoin('cabang as to_cabang', 'operstoks.to_cabang', '=', 'to_cabang.id')
+            ->leftJoin('barangs', 'operstoks.id_barang', '=', 'barangs.id')
+            ->select('operstoks.*', 'from_cabang.nama_cabang as from_cabang_nama', 'to_cabang.nama_cabang as to_cabang_nama', 'barangs.nama_barang as nama_barang')
+            ->whereMonth('operstoks.created_at', Carbon::parse($request->date)->month)
+            ->whereYear('operstoks.created_at', Carbon::parse($request->date)->year)->orderBy('operstoks.created_at', 'DESC')->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Oper Stok diterima',
+            'data' => $data_operstok,
+        ], 200);
+    }
+
     public function get_list_oper_stok_cabang(Request $request)
     {
         $validated = Validator::make($request->all(), [
