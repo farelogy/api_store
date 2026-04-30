@@ -9,6 +9,8 @@ use App\Models\Pembeli;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DireksiController extends Controller
 {
@@ -349,6 +351,17 @@ class DireksiController extends Controller
 
     public function data_sales_trend_direksi(Request $request)
     {
+        $validated = Validator::make($request->all(), [
+            'year' => 'required',
+            'month' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Ada yang Error',
+            ], 422);
+        }
         $year = $request->year;   // ambil dari request
         $month = $request->month;     // ambil dari request
 
