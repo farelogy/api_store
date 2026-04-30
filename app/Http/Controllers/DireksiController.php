@@ -156,4 +156,37 @@ class DireksiController extends Controller
             'data' => $response,
         ], 200);
     }
+
+    public function data_asset_value_direksi()
+    {
+        $totalAssetValue = DB::table('stok_barang')
+            ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
+            ->selectRaw('SUM(stok_barang.stok * barangs.modal) as total')
+            ->value('total');
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name')
+            ->get()
+            ->map(function ($branch) {
+
+                $assetValue = DB::table('stok_barang')
+                    ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
+                    ->where('stok_barang.id_cabang', $branch->branch_id)
+                    ->selectRaw('SUM(stok_barang.stok * barangs.modal) as total')
+                    ->value('total');
+
+                $branch->asset_value = $assetValue ?? 0;
+
+                return $branch;
+            });
+        $response = [
+            'total_asset_value' => $totalAssetValue ?? 0,
+            'branches' => $branches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+
+    }
 }
