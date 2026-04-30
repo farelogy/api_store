@@ -7,6 +7,7 @@ use App\Models\Kasharian;
 use App\Models\Pembayaran;
 use App\Models\Pembeli;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use DB;
 
 class DireksiController extends Controller
@@ -188,5 +189,87 @@ class DireksiController extends Controller
             'data' => $response,
         ], 200);
 
+    }
+
+    public function data_investment_direksi()
+    {
+        $totalAssetValue = DB::table('stok_barang')
+            ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
+            ->selectRaw('SUM(stok_barang.stok * barangs.modal) as total')
+            ->value('total');
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name')
+            ->get()
+            ->map(function ($branch) {
+
+                $assetValue = DB::table('stok_barang')
+                    ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
+                    ->where('stok_barang.id_cabang', $branch->branch_id)
+                    ->selectRaw('SUM(stok_barang.stok * barangs.modal) as total')
+                    ->value('total');
+
+                $branch->investment_value = $assetValue ?? 0;
+
+                return $branch;
+            });
+        $response = [
+            'total_investment' => $totalAssetValue ?? 0,
+            'branches' => $branches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+
+    }
+
+    public function data_sales_today_direksi()
+    {
+
+        $today = Carbon::today();
+
+        $totalSales = DB::table('detailtransaksis')
+            ->join('transaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
+            ->whereDate('transaksis.created_at', $today)
+            ->selectRaw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total')
+            ->value('total');
+
+        $totalTransactions = DB::table('transaksis')
+            ->whereDate('created_at', $today)
+            ->count('id');
+
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name')
+            ->get()
+            ->map(function ($branch) use ($today) {
+
+                $salesAmount = DB::table('detailtransaksis')
+                    ->join('transaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
+                    ->where('transaksis.id_cabang', $branch->branch_id)
+                    ->whereDate('transaksis.created_at', $today)
+                    ->selectRaw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total')
+                    ->value('total');
+
+                $transactionCount = DB::table('transaksis')
+                    ->where('id_cabang', $branch->branch_id)
+                    ->whereDate('created_at', $today)
+                    ->count('id');
+
+                $branch->sales_amount = $salesAmount ?? 0;
+                $branch->transaction_count = $transactionCount;
+
+                return $branch;
+            });
+        $response = [
+            'total_sales' => $totalSales ?? 0,
+            'total_transactions' => $totalTransactions,
+            'branches' => $branches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
     }
 }
