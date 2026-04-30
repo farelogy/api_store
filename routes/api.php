@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\DireksiController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KasharianController;
