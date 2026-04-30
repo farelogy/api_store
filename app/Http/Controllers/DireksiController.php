@@ -16,7 +16,8 @@ class DireksiController extends Controller
         // total piutang secara keseluruhan cabang
         $total_penjualan_piutang = Transaksi::leftjoin('detailtransaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
             ->where('transaksis.status', 'Belum Lunas')
-            ->sum('detailtransaksis.harga_satuan * detailtransaksis.jumlah');
+            ->selectRaw('SUM(detailtransaksis.harga_satuan * detailtransaksis.jumlah) as total')
+            ->value('total');
         $total_terbayar_piutang = Kasharian::where('kategori', 'Pembayaran Utang')->sum('jumlah');
 
         $total_piutang = $total_penjualan_piutang - $total_terbayar_piutang;
