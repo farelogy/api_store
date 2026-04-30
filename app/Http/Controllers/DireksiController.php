@@ -83,8 +83,11 @@ class DireksiController extends Controller
             });
 
         $response = [
-            'total_debt' => $total_piutang,
-            'branches' => $branches,
+            'success' => true,
+            'data' => [
+                'total_piutang' => $total_piutang,
+                'branches' => $branches,
+            ],
         ];
 
         return response()->json($response);
