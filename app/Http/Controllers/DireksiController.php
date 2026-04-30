@@ -346,4 +346,36 @@ class DireksiController extends Controller
             'data' => $response,
         ], 200);
     }
+
+    public function data_sales_trend_direksi(Request $request)
+    {
+        $year = $request->year;   // ambil dari request
+        $month = $request->month;     // ambil dari request
+
+        $dailySales = DB::table('detailtransaksis')
+            ->join('transaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
+            ->whereYear('transaksis.created_at', $year)
+            ->whereMonth('transaksis.created_at', $month)
+            ->groupBy(DB::raw('DAY(transaksis.created_at)'))
+            ->selectRaw('
+        DAY(transaksis.created_at) as day,
+        SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as sales_amount,
+        COUNT(DISTINCT transaksis.id) as transaction_count
+    ')
+            ->orderBy('day')
+            ->get();
+        $response = [
+            'data' => [
+                'year' => $year,
+                'month' => $month,
+                'daily_sales' => $dailySales,
+            ],
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+
+    }
 }

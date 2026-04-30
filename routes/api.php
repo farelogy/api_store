@@ -143,5 +143,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/data_asset_value_direksi', [DireksiController::class, 'data_asset_value_direksi']);
     Route::get('/data_investment_direksi', [DireksiController::class, 'data_investment_direksi']);
     Route::get('/data_sales_today_direksi', [DireksiController::class, 'data_sales_today_direksi']);
+    Route::post('/data_sales_trend_direksi', [DireksiController::class, 'data_sales_trend_direksi']);
 
 });
