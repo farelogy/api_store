@@ -93,4 +93,37 @@ class DireksiController extends Controller
 
         return response()->json($response, 200);
     }
+
+    public function data_keuntungan_direksi() {}
+
+    public function data_product_direksi()
+    {
+        $totalProducts = DB::table('stok_barang')
+            ->distinct('id_barang')
+            ->count('id_barang');
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name')
+            ->get()
+            ->map(function ($branch) {
+
+                $productCount = DB::table('stok_barang')
+                    ->where('id_cabang', $branch->branch_id)
+                    ->count('id_barang');
+
+                $branch->product_count = $productCount;
+
+                return $branch;
+            });
+        $response = [
+            'total_products' => $totalProducts,
+            'branches' => $branches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+    }
+
+    public function data_stock_direksi() {}
 }

@@ -136,5 +136,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // route direksi
     Route::get('/data_piutang_direksi', [DireksiController::class, 'data_piutang_direksi']);
+    Route::get('/data_keuntungan_direksi', [DireksiController::class, 'data_keuntungan_direksi']);
+    Route::get('/data_product_direksi', [DireksiController::class, 'data_product_direksi']);
+    Route::get('/data_stock_direksi', [DireksiController::class, 'data_stock_direksi']);
+    Route::get('/data_cash_flow_direksi', [DireksiController::class, 'data_cash_flow_direksi']);
+    Route::get('/data_asset_value_direksi', [DireksiController::class, 'data_asset_value_direksi']);
 
 });
