@@ -95,7 +95,47 @@ class DireksiController extends Controller
         return response()->json($response, 200);
     }
 
-    public function data_keuntungan_direksi() {}
+    public function data_keuntungan_direksi()
+    {
+
+        $today = Carbon::today();
+
+        $totalRevenue = DB::table('detailtransaksis')
+            ->join('transaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
+            ->join('barangs', 'barangs.id', '=', 'detailtransaksis.id_barang')
+            ->whereDate('transaksis.created_at', $today)
+            ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * barangs.modal)) as total')
+            ->value('total');
+
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name')
+            ->get()
+            ->map(function ($branch) use ($today) {
+
+                $revenue = DB::table('detailtransaksis')
+                    ->join('transaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
+                    ->join('barangs', 'barangs.id', '=', 'detailtransaksis.id_barang')
+                    ->where('transaksis.id_cabang', $branch->branch_id)
+                    ->whereDate('transaksis.created_at', $today)
+                    ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * barangs.modal)) as total')
+                    ->value('total');
+
+                $branch->revenue = $revenue ?? 0;
+
+                return $branch;
+            });
+
+        $response = [
+            'total_revenue' => $totalRevenue ?? 0,
+            'branches' => $branches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+
+    }
 
     public function data_product_direksi()
     {
