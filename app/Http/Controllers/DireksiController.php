@@ -60,13 +60,13 @@ class DireksiController extends Controller
                     })
                     ->where('transaksis.status', 'Belum Lunas')
                     ->where('transaksis.id_cabang', $branch->branch_id)
-                    ->groupBy('pembelis.id', 'pembelis.nama_pembeli')
+                    ->groupBy('pembelis.id', 'pembelis.nama')
                     ->selectRaw('
-                pembelis.id as customer_id,
-                pembelis.nama_pembeli as name,
-                SUM(detailtransaksis.harga_satuan * detailtransaksis.jumlah) 
-                    - COALESCE(SUM(kasharians.jumlah), 0) as debt_amount
-            ')
+        pembelis.id as customer_id,
+        pembelis.nama as name,
+        COALESCE(SUM(detailtransaksis.harga_satuan * detailtransaksis.jumlah), 0)
+            - COALESCE(SUM(kasharians.jumlah), 0) AS debt_amount
+    ')
                     ->orderByDesc('debt_amount')
                     ->limit(5)
                     ->get()
