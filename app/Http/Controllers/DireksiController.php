@@ -125,5 +125,35 @@ class DireksiController extends Controller
         ], 200);
     }
 
-    public function data_stock_direksi() {}
+    public function data_stock_direksi()
+    {
+        $totalStock = DB::table('stok_barang')
+            ->selectRaw('SUM(stok) as total_stock')
+            ->value('total_stock');
+
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name')
+            ->get()
+            ->map(function ($branch) {
+
+                $stockCount = DB::table('stok_barang')
+                    ->where('id_cabang', $branch->branch_id)
+                    ->selectRaw('SUM(stok) as total_stock')
+                    ->value('total_stock');
+
+                $branch->stock_count = $stockCount;
+
+                return $branch;
+            });
+
+        $response = [
+            'total_stocks' => $totalStock,
+            'branches' => $branches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+    }
 }
