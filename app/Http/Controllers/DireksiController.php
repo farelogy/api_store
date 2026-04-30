@@ -379,8 +379,8 @@ class DireksiController extends Controller
             ->get();
         $response = [
             'data' => [
-                'year' => $year,
-                'month' => $month,
+                'year' => intval($year),
+                'month' => intval($month),
                 'daily_sales' => $dailySales,
             ],
         ];
