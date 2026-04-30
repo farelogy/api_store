@@ -104,7 +104,7 @@ class DireksiController extends Controller
             ->join('transaksis', 'transaksis.id', '=', 'detailtransaksis.id_transaksi')
             ->join('barangs', 'barangs.id', '=', 'detailtransaksis.id_barang')
             ->whereDate('transaksis.created_at', $today)
-            ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * barangs.modal)) as total')
+            ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * COALESCE(barangs.modal, 0))) as total')
             ->value('total');
 
         $branches = DB::table('cabang')
@@ -117,7 +117,7 @@ class DireksiController extends Controller
                     ->join('barangs', 'barangs.id', '=', 'detailtransaksis.id_barang')
                     ->where('transaksis.id_cabang', $branch->branch_id)
                     ->whereDate('transaksis.created_at', $today)
-                    ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * barangs.modal)) as total')
+                    ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * COALESCE(barangs.modal, 0))) as total')
                     ->value('total');
 
                 $branch->revenue = $revenue ?? 0;
@@ -236,7 +236,7 @@ class DireksiController extends Controller
     {
         $totalAssetValue = DB::table('stok_barang')
             ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
-            ->selectRaw('SUM(stok_barang.stok * barangs.harga) as total')
+            ->selectRaw('SUM(stok_barang.stok * COALESCE(barangs.harga, 0)) as total')
             ->value('total');
         $branches = DB::table('cabang')
             ->select('id as branch_id', 'nama_cabang as branch_name')
@@ -246,7 +246,7 @@ class DireksiController extends Controller
                 $assetValue = DB::table('stok_barang')
                     ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
                     ->where('stok_barang.id_cabang', $branch->branch_id)
-                    ->selectRaw('SUM(stok_barang.stok * barangs.harga) as total')
+                    ->selectRaw('SUM(stok_barang.stok * COALESCE(barangs.harga, 0)) as total')
                     ->value('total');
 
                 $branch->asset_value = $assetValue ?? 0;
@@ -269,7 +269,7 @@ class DireksiController extends Controller
     {
         $totalAssetValue = DB::table('stok_barang')
             ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
-            ->selectRaw('SUM(stok_barang.stok * barangs.modal) as total')
+            ->selectRaw('SUM(stok_barang.stok * COALESCE(barangs.modal, 0)) as total')
             ->value('total');
         $branches = DB::table('cabang')
             ->select('id as branch_id', 'nama_cabang as branch_name')
@@ -279,7 +279,7 @@ class DireksiController extends Controller
                 $assetValue = DB::table('stok_barang')
                     ->join('barangs', 'barangs.id', '=', 'stok_barang.id_barang')
                     ->where('stok_barang.id_cabang', $branch->branch_id)
-                    ->selectRaw('SUM(stok_barang.stok * barangs.modal) as total')
+                    ->selectRaw('SUM(stok_barang.stok * COALESCE(barangs.modal, 0)) as total')
                     ->value('total');
 
                 $branch->investment_value = $assetValue ?? 0;
