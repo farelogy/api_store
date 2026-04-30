@@ -198,6 +198,40 @@ class DireksiController extends Controller
         ], 200);
     }
 
+    public function data_cash_flow_direksi()
+    {
+        $pusatSaldo = DB::table('kaspusats')
+            ->where('id', 1)
+            ->value('saldo');
+        $branches = DB::table('cabang')
+            ->select('id as branch_id', 'nama_cabang as branch_name', 'saldo')
+            ->get()
+            ->map(function ($branch) {
+                $branch->cash_flow = $branch->saldo ?? 0;
+                unset($branch->saldo); // hapus kolom saldo biar sesuai format
+
+                return $branch;
+            });
+        $pusatBranch = (object) [
+            'branch_id' => 0, // bisa pakai 0 atau null untuk pusat
+            'branch_name' => 'Pusat',
+            'cash_flow' => $pusatSaldo ?? 0,
+        ];
+
+        $allBranches = collect([$pusatBranch])->merge($branches);
+        $netCashFlow = ($pusatSaldo ?? 0) + $branches->sum('cash_flow');
+        $response = [
+            'net_cash_flow' => $netCashFlow,
+            'branches' => $allBranches,
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $response,
+        ], 200);
+
+    }
+
     public function data_asset_value_direksi()
     {
         $totalAssetValue = DB::table('stok_barang')
