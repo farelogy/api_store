@@ -86,7 +86,7 @@ class DireksiController extends Controller
         $response = [
             'success' => true,
             'data' => [
-                'total_piutang' => $total_piutang,
+                'total_debt' => $total_piutang,
                 'branches' => $branches,
             ],
         ];
