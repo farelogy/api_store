@@ -122,7 +122,7 @@ class DireksiController extends Controller
                     ->selectRaw('SUM((detailtransaksis.jumlah * detailtransaksis.harga_satuan) - (detailtransaksis.jumlah * COALESCE(barangs.modal, 0))) as total')
                     ->value('total');
 
-                $branch->revenue = $revenue ?? 0;
+                $branch->revenue_amount = $revenue ?? 0;
 
                 return $branch;
             });
