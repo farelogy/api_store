@@ -7,6 +7,7 @@ use App\Models\Historypiutangcabang;
 use App\Models\Historysaldocabang;
 use App\Models\Kasharian;
 use App\Models\Kaspusat;
+use App\Models\Operasionalpusat;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use DB;
@@ -211,11 +212,75 @@ class OperasionalController extends Controller
         $kasharian->id_pembeli = $request->id_pembeli;
         $kasharian->id_karyawan = $request->id_karyawan;
         $kasharian->id_cabang = $request->id_cabang;
-        $karyawan->save();
+        $kasharian->save();
 
         return response()->json([
             'status' => 'Success',
             'message' => 'Operasional Berhasil Diedit',
         ], 200);
+    }
+
+    public function operasional_pusat(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'date' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $get_operasional_lain = Operasionalpusat::whereDate('created_at', Carbon::parse($request->date))->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data History Operasional diterima',
+            'data' => $get_operasional_lain,
+
+        ], 200);
+
+    }
+
+    public function add_operasional_pusat(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'kategori' => 'required',
+            'jumlah' => 'required',
+            'status' => 'required',
+
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Pastikan Field Input Terisi',
+            ], 200);
+        }
+
+        $operasionalpusat = new Operasionalpusat;
+        $operasionalpusat->keterangan = $request->keterangan;
+        $operasionalpusat->jumlah = $request->jumlah;
+        $operasionalpusat->status = $request->status;
+
+        $operasionalpusat->save();
+
+        //update kas pusat
+        $update_kas_pusat = Kaspusat::first();
+        if ($request->status == 'Masuk') {
+            $update_kas_pusat->saldo = $update_kas_pusat->saldo + $request->jumlah;
+
+        } else {
+            $update_kas_pusat->saldo = $update_kas_pusat->saldo - $request->jumlah;
+        }
+        $update_kas_pusat->save();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Operasional Berhasil Ditambahkan',
+        ], 200);
+
     }
 }

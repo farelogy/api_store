@@ -101,6 +101,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_operasional_cabang', [OperasionalController::class, 'edit_operasional_cabang']);
     Route::post('/delete_operasional_cabang', [OperasionalController::class, 'delete_operasional_cabang']);
     Route::post('/add_operasional_cabang', [OperasionalController::class, 'add_operasional_cabang']);
+    Route::post('/operasional_pusat', [OperasionalController::class, 'operasional_pusat']);
+    Route::post('/add_operasional_pusat', [OperasionalController::class, 'add_operasional_pusat']);
 
     // route Refund
     Route::post('/get_transaksi_cabang_refund', [RefundController::class, 'get_transaksi_cabang_refund']);
