@@ -247,7 +247,7 @@ class OperasionalController extends Controller
     public function add_operasional_pusat(Request $request)
     {
         $validated = Validator::make($request->all(), [
-            'kategori' => 'required',
+            'keterangan' => 'required',
             'jumlah' => 'required',
             'status' => 'required',
 
