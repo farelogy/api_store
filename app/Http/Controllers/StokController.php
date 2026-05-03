@@ -116,4 +116,26 @@ class StokController extends Controller
         ], 200);
 
     }
+
+    public function approve_transfer_stok_pusat(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id_cabang' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        $get_transfer = DB::table('transferstokpusats')->where('to_cabang', $request->id_cabang)->where('status', 'Pending')->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data Transfer Stok Pusat diterima',
+            'data' => $get_transfer,
+        ], 200);
+    }
 }
