@@ -21,14 +21,14 @@ use Illuminate\Support\Facades\Validator;
 
 class TransaksiController extends Controller
 {
-    public function cek_keranjang(Request $request)
+    public function cek_transfer_stok_pusat(Request $request)
     {
-        $get_keranjang = DB::table('keranjangs')->where('id_cabang', $request->id_cabang)->count();
+        $get_stok_pusat = DB::table('transferstokpusats')->where('id_cabang', $request->id_cabang)->count();
 
         return response()->json([
             'status' => 'Success',
-            'message' => 'Data Keranjang diterima',
-            'data' => $get_keranjang,
+            'message' => 'Data Transfer Stok Pusat diterima',
+            'data' => $get_stok_pusat,
         ], 200);
     }
 
