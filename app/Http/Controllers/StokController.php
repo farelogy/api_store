@@ -130,7 +130,7 @@ class StokController extends Controller
             ], 200);
         }
 
-        $get_transfer = DB::table('transferstokpusats')->where('to_cabang', $request->id_cabang)->where('status', 'Pending')->get();
+        $get_transfer = DB::table('transferstokpusats')->where('to_cabang', $request->id_cabang)->where('approved', 'Pending')->get();
 
         return response()->json([
             'status' => 'Success',
