@@ -181,7 +181,6 @@ class RefundController extends Controller
 
                 $status_transaksi = 'Belum Lunas';
                 $get_transaksi->status = $status_transaksi;
-                $get_transaksi->jumlah_bayar = $total_harga_setelah_refund;
 
             }
 
