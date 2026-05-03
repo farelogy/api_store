@@ -23,7 +23,7 @@ class TransaksiController extends Controller
 {
     public function cek_transfer_stok_pusat(Request $request)
     {
-        $get_stok_pusat = DB::table('transferstokpusats')->where('id_cabang', $request->id_cabang)->count();
+        $get_stok_pusat = DB::table('transferstokpusats')->where('to_cabang', $request->id_cabang)->count();
 
         return response()->json([
             'status' => 'Success',
