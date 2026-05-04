@@ -59,6 +59,7 @@ class StokController extends Controller
                 'message' => $validated->errors(),
             ], 200);
         }
+        $id_transfer = intval($request->id_transfer);
 
         // cek data stok null atau nggak
         $cek_stok = StokBarang::where('id_barang', $request->id_barang)->where('id_cabang', $request->id_cabang)->count();
@@ -71,10 +72,10 @@ class StokController extends Controller
         }
 
         // Masukkan data ke transfer stok pusat karena stok barang yang ditransfer ke cabang harus di approve cabang
-        if ($request->id_transfer == '0') {
+        if ($id_transfer == 0) {
             $transfer_stok = new Transferstokpusat;
         } else {
-            $transfer_stok = Transferstokpusat::find($request->id_transfer);
+            $transfer_stok = Transferstokpusat::find($id_transfer);
         }
         $transfer_stok->id_barang = $request->id_barang;
         $transfer_stok->to_cabang = $request->id_cabang;
