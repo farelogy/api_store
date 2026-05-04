@@ -144,4 +144,16 @@ class StokController extends Controller
         ], 200);
 
     }
+
+    public function list_approve_transfer_stok_pusat(Request $request)
+    {
+        $get_transfer = Transferstokpusat::leftjoin('barangs', 'transferstokpusats.id_barang', '=', 'barangs.id')->leftJoin('cabang', 'transferstokpusats.to_cabang', '=', 'cabang.id')->where('transferstokpusats.to_cabang', $request->id_cabang)->where('transferstokpusats.approved', 'Pending')
+            ->select('transferstokpusats.id', 'transferstokpusats.id_barang', 'barangs.nama_barang', 'cabang.nama_cabang as to_cabang_nama', 'transferstokpusats.to_cabang', 'transferstokpusats.stok_transfer', 'transferstokpusats.approved', 'transferstokpusats.updated_at')->orderby('transferstokpusats.updated_at', 'desc')->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Data List Approve Transfer Stok Pusat diterima',
+            'data' => $get_transfer,
+        ], 200);
+    }
 }
