@@ -60,6 +60,16 @@ class StokController extends Controller
             ], 200);
         }
 
+        // cek data stok null atau nggak
+        $cek_stok = StokBarang::where('id_barang', $request->id_barang)->where('id_cabang', $request->id_cabang)->count();
+        if ($cek_stok == 0) {
+            $stok_barang = new StokBarang;
+            $stok_barang->id_barang = $request->id_barang;
+            $stok_barang->id_cabang = $request->id_cabang;
+            $stok_barang->stok = 0;
+            $stok_barang->save();
+        }
+
         // Masukkan data ke transfer stok pusat karena stok barang yang ditransfer ke cabang harus di approve cabang
         if ($request->id_transfer == '0') {
             $transfer_stok = new Transferstokpusat;
