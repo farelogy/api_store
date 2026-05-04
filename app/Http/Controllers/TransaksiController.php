@@ -23,7 +23,7 @@ class TransaksiController extends Controller
 {
     public function cek_transfer_stok_pusat(Request $request)
     {
-        $get_stok_pusat = DB::table('transferstokpusats')->where('to_cabang', $request->id_cabang)->count();
+        $get_stok_pusat = DB::table('transferstokpusats')->where('to_cabang', $request->id_cabang)->where('approved', 'Pending')->count();
 
         return response()->json([
             'status' => 'Success',
@@ -46,7 +46,7 @@ class TransaksiController extends Controller
                 'message' => $validated->errors(),
             ], 200);
         }
-        //cek barang di keranjang
+        // cek barang di keranjang
         $cek_keranjang_barang = Keranjang::where('id_cabang', $request->id_cabang)->where('id_barang', $request->id_barang)->count();
         if ($cek_keranjang_barang != 0) {
             $barang_sudah_di_keranjang = Keranjang::where('id_cabang', $request->id_cabang)->where('id_barang', $request->id_barang)->first();
@@ -82,7 +82,7 @@ class TransaksiController extends Controller
                 'message' => $validated->errors(),
             ], 200);
         }
-        //delete barang di keranjang
+        // delete barang di keranjang
         Keranjang::where('id_cabang', $request->id_cabang)->where('id_barang', $request->id_barang)->delete();
 
         return response()->json([
@@ -105,7 +105,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //get list keranjang
+        // get list keranjang
         $get_barang = Keranjang::select('keranjangs.id_barang', 'keranjangs.jumlah', 'keranjangs.harga_satuan', 'barangs.nama_barang', 'stok_barang.stok')
             ->leftjoin('barangs', 'keranjangs.id_barang', '=', 'barangs.id')
             ->leftjoin('stok_barang', 'keranjangs.id_barang', '=', 'stok_barang.id_barang')
@@ -131,7 +131,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //tambahkan pembelinya dulu
+        // tambahkan pembelinya dulu
         $ceknama = Pembeli::where('nama_pembeli', $request->nama_pembeli)->count();
         if ($ceknama != 0) {
             $id_pembeli = Pembeli::where('nama_pembeli', $request->nama_pembeli)->first();
@@ -144,7 +144,7 @@ class TransaksiController extends Controller
             $id_pembeli = $new_pembeli->id;
         }
 
-        //buat judul transaksi
+        // buat judul transaksi
         $judul_transaksi = 'TR-'.strtotime('now');
 
         // update saldo pembeli jika pembayaran transaksi berlebih
@@ -152,7 +152,7 @@ class TransaksiController extends Controller
         $jumlahbayar = floatval($request->jumlah_bayar);
         $total_harga = floatval($request->total_harga);
 
-        //hapus keranjang
+        // hapus keranjang
         Keranjang::where('id_cabang', $request->id_cabang)->delete();
 
         $transaksi = new Transaksi;
@@ -169,7 +169,7 @@ class TransaksiController extends Controller
         }
         $transaksi->save();
 
-        //get id transaksi
+        // get id transaksi
         $id_trans = Transaksi::where('nama_transaksi', $judul_transaksi)->first()->id;
 
         if ($request->status == 'Belum Lunas') {
@@ -181,10 +181,10 @@ class TransaksiController extends Controller
             $history_piutang->piutang = $total_harga - ($jumlahbayar + $saldopembeli);
             $history_piutang->save();
         }
-        //update saldo pembeli
+        // update saldo pembeli
         $update_pembeli = Pembeli::find($id_pembeli);
 
-        //jika saldo pembeli lebih besar dari 0 maka harus masuk kas harian karena auto dipake juga saat checkout
+        // jika saldo pembeli lebih besar dari 0 maka harus masuk kas harian karena auto dipake juga saat checkout
         if ($update_pembeli->saldo > 0) {
             $kasharian = new Kasharian;
             $kasharian->kategori = 'Saldo Pembeli';
@@ -197,7 +197,7 @@ class TransaksiController extends Controller
             $kasharian->save();
         }
 
-        //Baru disini cek apabila saldo pembeli dan jumlah bayar bisa lebih dari total harga
+        // Baru disini cek apabila saldo pembeli dan jumlah bayar bisa lebih dari total harga
         if (($saldopembeli + $jumlahbayar) - $total_harga >= 0) {
             $update_pembeli->saldo = ($saldopembeli + $jumlahbayar) - $total_harga;
             $update_pembeli->save();
@@ -218,10 +218,10 @@ class TransaksiController extends Controller
             $update_pembeli->save();
         }
 
-        //convert item string json
+        // convert item string json
         $item = json_decode($request->item);
 
-        //buat detail transaksi
+        // buat detail transaksi
         foreach ($item as $x) {
             $detail_trans = new Detailtransaksi;
             $detail_trans->id_transaksi = $id_trans;
@@ -233,14 +233,14 @@ class TransaksiController extends Controller
             $detail_trans->save();
         }
 
-        //pengurangan stok barang
+        // pengurangan stok barang
         foreach ($item as $y) {
             $get_stok = DB::table('stok_barang')->updateOrInsert(
                 ['id_barang' => $y->id_barang, 'id_cabang' => $request->id_cabang], // Condition to find the record
                 ['stok' => $y->stok - $y->jumlah] // Values to update or insert
             );
 
-            //put history stok
+            // put history stok
             $history_stok = new Historystok;
             $history_stok->id_barang = $y->id_barang;
             $history_stok->id_cabang = $request->id_cabang;
@@ -249,7 +249,7 @@ class TransaksiController extends Controller
             $history_stok->save();
 
         }
-        //record to kas harian dan pembayarans
+        // record to kas harian dan pembayarans
         if ($jumlahbayar != 0) {
             $pembayaran = new Pembayaran;
             $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
@@ -273,12 +273,12 @@ class TransaksiController extends Controller
             $kasharian->status = 'Masuk';
             $kasharian->save();
 
-            //karena ada pembayaran maka perlu masuk juga ke saldo cabang
+            // karena ada pembayaran maka perlu masuk juga ke saldo cabang
             $update_cabang = Cabang::find($request->id_cabang);
             $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
             $update_cabang->save();
 
-            //update posisi saldo cabang terakhir hari itu
+            // update posisi saldo cabang terakhir hari itu
             $history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->count();
             if ($history_saldo_cabang == 0) {
                 $update_history = new Historysaldocabang;
@@ -313,7 +313,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //get list Transaksi
+        // get list Transaksi
         $get_transaksi = Transaksi::leftjoin('pembelis', 'transaksis.id_pembeli', '=', 'pembelis.id')->select('transaksis.*', 'pembelis.nama_pembeli')->
         where('transaksis.id_cabang', $request->id_cabang)->whereDate('transaksis.created_at', Carbon::parse($request->date))->orderby('transaksis.created_at', 'DESC')
             ->get();
@@ -327,9 +327,9 @@ class TransaksiController extends Controller
 
     public function get_transaksi(Request $request)
     {
-        //get list harga total per transaksi
+        // get list harga total per transaksi
         $harga_total_transaksi = Detailtransaksi::select('detailtransaksis.id_transaksi', DB::raw('SUM(detailtransaksis.jumlah*detailtransaksis.harga_satuan) as total_rupiah_transaksi'))->groupby('detailtransaksis.id_transaksi');
-        //get list Transaksi
+        // get list Transaksi
         $get_transaksi = Transaksi::leftjoin('cabang', 'cabang.id', '=', 'transaksis.id_cabang')->leftJoinSub($harga_total_transaksi, 'harga_total_transaksi', function (JoinClause $join) {
             $join->on('transaksis.id', '=', 'harga_total_transaksi.id_transaksi');
         })
@@ -356,7 +356,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //get list keranjang
+        // get list keranjang
         $get_barang = Detailtransaksi::select('detailtransaksis.id_barang', 'detailtransaksis.jumlah', 'detailtransaksis.nama_barang', 'detailtransaksis.status', 'detailtransaksis.keterangan', 'detailtransaksis.harga_satuan', 'stok_barang.stok')
             ->leftjoin('stok_barang', function ($join) {
                 $join->on('detailtransaksis.id_barang', '=', 'stok_barang.id_barang')
@@ -384,7 +384,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //get id detail transaksi
+        // get id detail transaksi
         $get_detail_transaksi = Detailtransaksi::where('id_transaksi', $request->id_transaksi)->where('id_barang', $request->id_barang)->first();
         $edit_detail = Detailtransaksi::find($get_detail_transaksi->id);
         $edit_detail->status = $request->status;
@@ -412,7 +412,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //get Piutang Transaksi
+        // get Piutang Transaksi
         $get_piutang = Transaksi::leftjoin('pembelis', 'transaksis.id_pembeli', '=', 'pembelis.id')->
         leftjoin('detailtransaksis', 'detailtransaksis.id_transaksi', '=', 'transaksis.id')->
         select('transaksis.*', 'pembelis.nama_pembeli', DB::raw('SUM(detailtransaksis.jumlah * detailtransaksis.harga_satuan) as total_harga'))->
@@ -449,7 +449,7 @@ class TransaksiController extends Controller
             ], 200);
         }
 
-        //tabel Transaksi
+        // tabel Transaksi
         $jumlahbayar = floatval($request->jumlah_bayar);
         $total_harga = floatval($request->total_harga);
         $sisa_bayar = floatval($request->sisa_bayar);
@@ -467,7 +467,7 @@ class TransaksiController extends Controller
 
         $get_pembeli = Pembeli::find($request->id_pembeli);
 
-        //jika saldo pembeli lebih besar dari 0 maka harus masuk kas harian karena auto dipake juga saat bayar piutang
+        // jika saldo pembeli lebih besar dari 0 maka harus masuk kas harian karena auto dipake juga saat bayar piutang
         if ($get_pembeli->saldo > 0) {
             $kasharian = new Kasharian;
             $kasharian->kategori = 'Saldo Pembeli';
@@ -479,7 +479,7 @@ class TransaksiController extends Controller
             $kasharian->status = 'Keluar';
             $kasharian->save();
         }
-        //jika bayar nya lebih
+        // jika bayar nya lebih
         if ($jumlahbayar > $sisa_bayar) {
             $get_pembeli->saldo = ($jumlahbayar - $sisa_bayar);
             $get_pembeli->save();
@@ -498,7 +498,7 @@ class TransaksiController extends Controller
 
         }
 
-        //record to kas harian dan pembayarans
+        // record to kas harian dan pembayarans
         if ($jumlahbayar != 0) {
             $pembayaran = new Pembayaran;
             $pembayaran->nama_pembayaran = 'PB-'.strtotime('now');
@@ -522,12 +522,12 @@ class TransaksiController extends Controller
             $kasharian->status = 'Masuk';
             $kasharian->save();
 
-            //karena ada pembayaran maka perlu masuk juga ke saldo cabang
+            // karena ada pembayaran maka perlu masuk juga ke saldo cabang
             $update_cabang = Cabang::find($request->id_cabang);
             $update_cabang->saldo = $update_cabang->saldo + $jumlahbayar;
             $update_cabang->save();
 
-            //update posisi saldo cabang terakhir hari itu
+            // update posisi saldo cabang terakhir hari itu
             $history_saldo_cabang = Historysaldocabang::where('id_cabang', $request->id_cabang)->whereDate('created_at', Carbon::today())->count();
             if ($history_saldo_cabang == 0) {
                 $update_history = new Historysaldocabang;
