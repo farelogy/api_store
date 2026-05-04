@@ -63,13 +63,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_stok_barang', [StokController::class, 'edit_stok_barang']);
     Route::post('/delete_stok_barang', [StokController::class, 'delete_stok_barang']);
     Route::post('/history_stok_cabang', [StokController::class, 'history_stok_cabang']);
-    Route::post('/list_approve_transfer_stok_pusat', [StokController::class, 'list_approve_transfer_stok_pusat']);
-    Route::post('/approve_stock_from_pusat', [StokController::class, 'approve_stock_from_pusat']);
 
     // route untuk transaksi
     Route::post('/add_transaksi', [TransaksiController::class, 'add_transaksi']);
     Route::post('/delete_keranjang', [TransaksiController::class, 'delete_keranjang']);
-    Route::post('/cek_keranjang', [TransaksiController::class, 'cek_keranjang']);
+    Route::post('/cek_transfer_stok_pusat', [TransaksiController::class, 'cek_transfer_stok_pusat']);
     Route::post('/tambah_keranjang', [TransaksiController::class, 'tambah_keranjang']);
     Route::post('/get_barang_keranjang', [TransaksiController::class, 'get_barang_keranjang']);
     Route::post('/check_out', [TransaksiController::class, 'check_out']);
@@ -103,6 +101,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_operasional_cabang', [OperasionalController::class, 'edit_operasional_cabang']);
     Route::post('/delete_operasional_cabang', [OperasionalController::class, 'delete_operasional_cabang']);
     Route::post('/add_operasional_cabang', [OperasionalController::class, 'add_operasional_cabang']);
+    Route::post('/operasional_pusat', [OperasionalController::class, 'operasional_pusat']);
+    Route::post('/add_operasional_pusat', [OperasionalController::class, 'add_operasional_pusat']);
 
     // route Refund
     Route::post('/get_transaksi_cabang_refund', [RefundController::class, 'get_transaksi_cabang_refund']);
