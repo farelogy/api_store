@@ -37,7 +37,7 @@ class StokController extends Controller
 
         return response()->json([
             'status' => 'Success',
-            'message' => 'Data Barang Cabang diterima',
+            'message' => 'Data Barang Cabang diterima ya',
             'data' => $get_cabang_barang,
         ], 200);
     }
