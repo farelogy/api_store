@@ -34,7 +34,7 @@ class StokController extends Controller
         })->leftJoin('transferstokpusats', function ($join) {
             $join->on('barangs.id', '=', 'transferstokpusats.id_barang')
                 ->on('filtered_stok.id_cabang', '=', 'transferstokpusats.to_cabang');
-        })->select('barangs.id', 'barangs.nama_barang', 'barangs.satuan', 'barangs.harga', 'barangs.modal', 'filtered_stok.stok', 'filtered_stok.updated_at', 'transferstokpusats.stok_transfer', 'transferstokpusats.approved')
+        })->select('barangs.id', 'barangs.nama_barang', 'barangs.satuan', 'barangs.harga', 'barangs.modal', 'filtered_stok.stok', 'filtered_stok.updated_at', 'transferstokpusats.id as id_transfer', 'transferstokpusats.stok_transfer', 'transferstokpusats.approved')
             ->orderby('barangs.nama_barang', 'asc')->get();
 
         return response()->json([
