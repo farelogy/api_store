@@ -63,6 +63,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/edit_stok_barang', [StokController::class, 'edit_stok_barang']);
     Route::post('/delete_stok_barang', [StokController::class, 'delete_stok_barang']);
     Route::post('/history_stok_cabang', [StokController::class, 'history_stok_cabang']);
+    Route::post('/list_approve_transfer_stok_pusat', [StokController::class, 'list_approve_transfer_stok_pusat']);
+    Route::post('/approve_stock_from_pusat', [StokController::class, 'approve_stock_from_pusat']);
 
     // route untuk transaksi
     Route::post('/add_transaksi', [TransaksiController::class, 'add_transaksi']);
