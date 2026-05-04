@@ -61,7 +61,7 @@ class StokController extends Controller
         }
 
         // Masukkan data ke transfer stok pusat karena stok barang yang ditransfer ke cabang harus di approve cabang
-        if ($request->id_transfer == 0) {
+        if ($request->id_transfer == '0') {
             $transfer_stok = new Transferstokpusat;
         } else {
             $transfer_stok = Transferstokpusat::find($request->id_transfer);
