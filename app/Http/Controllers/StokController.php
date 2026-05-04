@@ -31,8 +31,8 @@ class StokController extends Controller
         $get_stok = DB::table('stok_barang')->where('id_cabang', $request->id_cabang);
         $get_cabang_barang = DB::table('barangs')->leftJoinSub($get_stok, 'filtered_stok', function (JoinClause $join) {
             $join->on('barangs.id', '=', 'filtered_stok.id_barang');
-        })->leftJoin('transferstokpusats', 'barangs.id', '=', 'transferstokpusats.id_barang')->where('transferstokpusats.to_cabang', $request->id_cabang)
-            ->select('barangs.id', 'barangs.nama_barang', 'barangs.satuan', 'barangs.harga', 'barangs.modal', 'filtered_stok.stok', 'filtered_stok.updated_at', 'transferstokpusats.stok_transfer', 'transferstokpusats.approved')
+        })
+            ->select('barangs.id', 'barangs.nama_barang', 'barangs.satuan', 'barangs.harga', 'barangs.modal', 'filtered_stok.stok', 'filtered_stok.updated_at')
             ->orderby('barangs.nama_barang', 'asc')->get();
 
         return response()->json([
