@@ -156,4 +156,56 @@ class StokController extends Controller
             'data' => $get_transfer,
         ], 200);
     }
+
+    public function approve_stock_from_pusat(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'id' => 'required',
+            'id_cabang' => 'required',
+            'approved' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $validated->errors(),
+            ], 200);
+        }
+
+        $approve_transfer = Transferstokpusat::find($request->id);
+        $approve_transfer->approved = $request->approved;
+        $approve_transfer->save();
+
+        if ($request->approved == 'Disetujui') {
+            // cek data stok null atau nggak
+            $cek_stok = StokBarang::where('id_barang', $approve_transfer->id_barang)->where('id_cabang', $approve_transfer->to_cabang)->count();
+            if ($cek_stok == 0) {
+                $stok_barang = new StokBarang;
+                $stok_barang->id_barang = $approve_transfer->id_barang;
+                $stok_barang->id_cabang = $approve_transfer->to_cabang;
+                $stok_barang->stok = 0;
+                $stok_barang->save();
+            }
+
+            // update stok barang cabang yang menerima transfer
+            $stok_eksisting = StokBarang::where('id_barang', $approve_transfer->id_barang)->where('id_cabang', $approve_transfer->to_cabang)->first();
+            $update_stok = StokBarang::find($stok_eksisting->id);
+            $update_stok->stok = $stok_eksisting->stok + $approve_transfer->stok_transfer;
+            $update_stok->save();
+
+            // tambah history stok
+            $history_stok = new Historystok;
+            $history_stok->id_barang = $approve_transfer->id_barang;
+            $history_stok->id_cabang = $approve_transfer->to_cabang;
+            $history_stok->jumlah = $approve_transfer->stok_transfer;
+            $history_stok->status = 'Tambah';
+            $history_stok->keterangan = 'Transfer Stok dari Pusat';
+            $history_stok->save();
+        }
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Update Status Approve Transfer Stok Pusat Berhasil',
+        ], 200);
+    }
 }
